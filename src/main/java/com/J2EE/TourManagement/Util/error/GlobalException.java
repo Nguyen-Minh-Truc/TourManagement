@@ -50,8 +50,6 @@ public class GlobalException {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
   }
 
- 
-
   @ExceptionHandler(InvalidException.class)
   public ResponseEntity<RestResponse<Object>>
   handleIdInvalidException(InvalidException ex) {
