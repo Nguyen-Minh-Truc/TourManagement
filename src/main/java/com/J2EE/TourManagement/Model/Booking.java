@@ -1,12 +1,24 @@
 package com.J2EE.TourManagement.Model;
 
+import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -17,16 +29,19 @@ import java.util.List;
 
 @Entity
 @Table(name = "bookings")
+
 public class Booking {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
-  @Column(name = "id_user") private long userId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id_user", nullable = false)
+  private User user;
 
   private double totalPrice;
 
   private String note;
 
-  private String status;
+  @Enumerated(EnumType.STRING) private EnumStatusBooking status;
 
   private String contactEmail;
 
@@ -43,15 +58,16 @@ public class Booking {
 
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,
              orphanRemoval = true)
+  @JsonManagedReference
   private List<BookingDetail> bookingDetails;
 
   public long getId() { return this.id; }
 
   public void setId(long id) { this.id = id; }
 
-  public Long getUserId() { return this.userId; }
+  public User getUser() { return this.user; }
 
-  public void setUserId(Long userId) { this.userId = userId; }
+  public void setUser(User user) { this.user = user; }
 
   public Double getTotalPrice() { return this.totalPrice; }
 
@@ -61,9 +77,9 @@ public class Booking {
 
   public void setNote(String note) { this.note = note; }
 
-  public String getStatus() { return this.status; }
+  public EnumStatusBooking getStatus() { return this.status; }
 
-  public void setStatus(String status) { this.status = status; }
+  public void setStatus(EnumStatusBooking status) { this.status = status; }
 
   public String getContactEmail() { return this.contactEmail; }
 

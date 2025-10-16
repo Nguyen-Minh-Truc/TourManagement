@@ -16,6 +16,8 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name = "bookingdetail")
@@ -27,6 +29,7 @@ public class BookingDetail {
 
     @ManyToOne
     @JoinColumn(name = "id_booking", nullable = false)
+    @JsonBackReference
     private Booking booking;
 
     @Column(name = "id_tourDetail")
@@ -35,11 +38,11 @@ public class BookingDetail {
     @Column(name = "id_tourPrice")
     private long tourPriceId;
 
-    private String status;
+    private boolean status;
 
     private int quantity;
 
-    private double totalPrice;
+    private double price;
 
     // Getter & Setter
     public Long getId() {
@@ -74,11 +77,11 @@ public class BookingDetail {
         this.tourPriceId = tourPriceId;
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
@@ -90,11 +93,11 @@ public class BookingDetail {
         this.quantity = quantity;
     }
 
-    public Double getTotalPrice() {
-        return totalPrice;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
