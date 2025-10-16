@@ -1,6 +1,9 @@
 package com.J2EE.TourManagement.Model;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -8,17 +11,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Entity
+@Table(name = "tourDetail")
 public class TourDetail {
-    private Long id;                 // BIGINT -> Long
-    private Long idTour;             // FK -> Long
-    private String startLocation;    // VARCHAR -> String
-    private LocalDate startDay;      // DATE -> LocalDate
-    private LocalDate endDay;        // DATE -> LocalDate
-    private String status;           // ENUM -> String
-    private LocalDateTime createdAt; // DATETIME -> LocalDateTime
-    private LocalDateTime updateAt;  // DATETIME -> LocalDateTime
+    @Id
+    private Long id;
 
-    // Quan hệ
-    private Tour tour;
-    private List<TourPrice> tourPrices;
+    private Long idTour;
+
+    private String startLocation;
+    private LocalDate startDay;
+    private LocalDate endDay;
+    private String status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updateAt;
+
 }

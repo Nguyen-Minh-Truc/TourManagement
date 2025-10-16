@@ -11,6 +11,4 @@ public class TourPrice {
     private String priceType;
     private BigDecimal price;
 
-    // Quan hệ
-    private TourDetail tourDetail;
 }
