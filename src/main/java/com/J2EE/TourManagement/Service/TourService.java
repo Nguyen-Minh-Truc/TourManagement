@@ -1,8 +1,15 @@
 package com.J2EE.TourManagement.Service;
 
+import com.J2EE.TourManagement.Model.TourDetail;
+import com.J2EE.TourManagement.Util.error.InvalidException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Repository.TourRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +23,35 @@ public class TourService {
         this.tourRepository = tourRepository;
     }
 
-    //them
-    public Tour HandleSave(Tour newTour){
-        return this.tourRepository.save(newTour);
+    //Create
+    @Transactional
+    public Tour handleSave(Tour tour) {
+        if (tour.getTourDetails() != null) {
+            for (TourDetail detail : tour.getTourDetails()) {
+                detail.setTour(tour); // Gắn tour_id
+            }
+        }
+        return tourRepository.save(tour);
     }
 
-    //get all
-    public List<Tour> HandleGetAll() {
+
+    //Read
+    public List<Tour> handleGetAll() {
         return this.tourRepository.findAll();
+    }
+
+    //Update
+    @Transactional
+    public Tour handleUpdate(Long id, Tour updatedTour)  throws InvalidException {
+        if (!tourRepository.existsById(id))
+        {
+            throw new InvalidException("Không tìm thấy TourPrice để xóa (id = " + id + ")");
+        }
+        return this.tourRepository.findById(id).
+                map(tour -> {
+                    BeanUtils.copyProperties(updatedTour, tour, "id", "createdAt", "tourDetails");
+                    return this.tourRepository.save(tour);
+                }).get();
     }
 
     //get by id
@@ -31,21 +59,19 @@ public class TourService {
         return this.tourRepository.findById(id);
     }
 
-    //sua
-    public Tour handleUpdate(Long id, Tour updatedTour) {
-        return this.tourRepository.findById(id).
-                map(tour -> {
-                BeanUtils.copyProperties(updatedTour, tour, "id", "createdAt", "updatedAt");
-                return this.tourRepository.save(tour);
-                })
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tour có id = " + id));
-    }
+    public Page<Tour> getPagedTours(String status, String destination, int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
 
-    //xoa
-    public void  handleDelete(Long id) {
-        if (!this.tourRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy tour để xóa (id = " + id + ")");
-        }
-        this.tourRepository.deleteById(id);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Nếu người dùng không nhập filter, thay bằng chuỗi rỗng để match tất cả
+        String statusFilter = (status == null || status.isEmpty()) ? "" : status;
+        String destinationFilter = (destination == null || destination.isEmpty()) ? "" : destination;
+
+        return tourRepository.findByStatusContainingIgnoreCaseAndDestinationContainingIgnoreCase(
+                statusFilter, destinationFilter, pageable
+        );
     }
 }
