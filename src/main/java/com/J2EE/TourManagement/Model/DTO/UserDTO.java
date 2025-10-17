@@ -1,7 +1,9 @@
 package com.J2EE.TourManagement.Model.DTO;
 
+import com.J2EE.TourManagement.Model.Booking;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
+import java.util.List;
 
 public class UserDTO {
   private long id;
@@ -19,6 +21,8 @@ public class UserDTO {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant updatedAt;
 
+
+   private List<Booking> bookings;
 
     public UserDTO() {
     }
@@ -83,6 +87,14 @@ public class UserDTO {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Booking> getBookings() {
+        return this.bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 
 

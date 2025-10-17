@@ -61,7 +61,7 @@ public class BookingController {
   }
 
   @PutMapping("booking/{id}")
-  public ResponseEntity<?> putMethodName(@PathVariable long id,
+  public ResponseEntity<?> putMethodName(@PathVariable("id") long id,
                                          @RequestBody BookingDTO bookingDTO) throws InvalidException {
 
     Boolean isIdExist = this.bookingSer.isIdExist(id);

@@ -57,7 +57,7 @@ public class UserController {
   }
 
   @GetMapping("/users/{id}")
-  public ResponseEntity<UserDTO> getById(@PathVariable long id)
+  public ResponseEntity<UserDTO> getById(@PathVariable("id") long id)
       throws InvalidException {
     boolean isId = this.userSer.isIdExist(id);
     if (!isId) {
@@ -69,7 +69,7 @@ public class UserController {
 
   @PutMapping("/users/{id}")
   @ApiMessage("cập nhật người dùng thành công")
-  public ResponseEntity<UserDTO> UpdateUser(@PathVariable long id,
+  public ResponseEntity<UserDTO> UpdateUser(@PathVariable("id") long id,
                                             @RequestBody User userCurrent)
       throws InvalidException {
 

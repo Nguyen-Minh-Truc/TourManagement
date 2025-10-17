@@ -44,6 +44,7 @@ public class UserSer {
     resUserDTO.setCreatedAt(user.getCreatedAt());
     resUserDTO.setStatus(user.getStatus());
     resUserDTO.setUpdatedAt(user.getUpdatedAt());
+    resUserDTO.setBookings(user.getBookings());
     return resUserDTO;
   }
 

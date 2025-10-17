@@ -2,7 +2,11 @@ package com.J2EE.TourManagement.Model;
 
 import com.J2EE.TourManagement.Util.constan.EnumStatusPayment;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
+
+
 import java.time.Instant;
 
 @Entity
@@ -14,11 +18,12 @@ public class Payment {
   // Khóa ngoại tới Booking
   @ManyToOne
   @JoinColumn(name = "id_booking", nullable = false)
+   @JsonManagedReference
   private Booking booking;
 
   @ManyToOne @JoinColumn(name = "provider_id") private PaymentProvider provider;
 
-  private Double amount;
+  private double amount;
   private String method;
 
   @Enumerated(EnumType.STRING) private EnumStatusPayment status;
@@ -43,9 +48,9 @@ public class Payment {
     this.provider = provider;
   }
 
-  public Double getAmount() { return this.amount; }
+  public double getAmount() { return this.amount; }
 
-  public void setAmount(Double amount) { this.amount = amount; }
+  public void setAmount(double amount) { this.amount = amount; }
 
   public String getMethod() { return this.method; }
 
@@ -55,9 +60,9 @@ public class Payment {
 
   public void setStatus(EnumStatusPayment status) { this.status = status; }
 
-  public Instant getCreateAt() { return this.createdAt; }
+  public Instant getCreatedAt() { return this.createdAt; }
+public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
-  public void setCreateAt(Instant createAt) { this.createdAt = createAt; }
 
   public Instant getUpdatedAt() { return this.updatedAt; }
 

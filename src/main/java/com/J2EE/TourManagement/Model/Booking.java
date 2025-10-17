@@ -1,6 +1,7 @@
 package com.J2EE.TourManagement.Model;
 
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,6 +36,7 @@ public class Booking {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_user", nullable = false)
+   @JsonBackReference
   private User user;
 
   private double totalPrice;
@@ -54,6 +56,7 @@ public class Booking {
   private Instant updatedAt;
 
   @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+   @JsonBackReference
   private Payment payment;
 
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,
