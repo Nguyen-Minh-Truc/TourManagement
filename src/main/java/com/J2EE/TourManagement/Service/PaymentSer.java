@@ -46,4 +46,8 @@ public class PaymentSer {
         Payment Payment = this.paymentRep.findById(id).isPresent() ? this.paymentRep.findById(id).get() : null;
         return Payment;
     }
+
+    public boolean isIdExist(long id){
+        return this.paymentRep.existsById(id);
+    }
 }

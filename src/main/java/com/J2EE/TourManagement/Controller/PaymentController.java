@@ -14,6 +14,10 @@ import com.J2EE.TourManagement.Service.PaymentSer;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Controller
@@ -29,6 +33,22 @@ public class PaymentController {
     @PostMapping("/payment/create")
     public ResponseEntity<Payment> postMethodName(@RequestBody @Valid PaymentDTO paymentDTO) throws InvalidException {
         return ResponseEntity.ok().body(this.paymentSer.createPayment(paymentDTO));
+    }
+    
+    @GetMapping("/payment/{id}")
+    public ResponseEntity<?> getPaymentbyId(@PathVariable("id") long id) throws InvalidException {
+        if(!this.paymentSer.isIdExist(id)){
+            throw new InvalidException("không tồn tại id: " + id);
+        }
+        return ResponseEntity.ok(this.paymentSer.getPaymentById(id));
+
+    }
+    
+
+
+    @GetMapping("/payment")
+    public String getAllPayment(@RequestParam String param) {
+        return new String();
     }
     
 }
