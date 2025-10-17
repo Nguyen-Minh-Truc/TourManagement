@@ -27,8 +27,9 @@ public class TourService {
     }
 
     //get by id
-    public Optional<Tour> handleGetById(Long id) {
-        return this.tourRepository.findById(id);
+    public Tour handleGetById(Long id) {
+        Tour tour = this.tourRepository.findById(id).isPresent() ? this.tourRepository.findById(id).get() : null;
+        return tour;
     }
 
     //sua
@@ -47,5 +48,9 @@ public class TourService {
             throw new RuntimeException("Không tìm thấy tour để xóa (id = " + id + ")");
         }
         this.tourRepository.deleteById(id);
+    }
+
+    public boolean checkIdExists(long id){
+        return this.tourRepository.existsById(id);
     }
 }

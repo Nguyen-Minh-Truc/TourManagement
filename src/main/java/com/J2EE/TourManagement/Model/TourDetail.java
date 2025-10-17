@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,8 +21,8 @@ public class TourDetail {
     private Long idTour;
 
     private String startLocation;
-    private LocalDate startDay;
-    private LocalDate endDay;
+    private Instant startDay;
+    private Instant endDay;
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;

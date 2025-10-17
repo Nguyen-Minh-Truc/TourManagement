@@ -9,6 +9,6 @@ public class TourPrice {
     private Long id;
     private Long idTourDetail;
     private String priceType;
-    private BigDecimal price;
+    private double price;
 
 }
