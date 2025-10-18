@@ -26,7 +26,7 @@ public class User {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
   @NotBlank(message = "Tên người dùng không được để trống.")
-  private String fullName;
+  private String fullname;
   @NotBlank(message = "Email người dùng không được để trống.")
   private String email;
   @NotBlank(message = "Mật khẩu người dùng không được để trống.")
@@ -50,9 +50,9 @@ public class User {
 
   public void setId(long id) { this.id = id; }
 
-  public String getFullName() { return this.fullName; }
+  public String getFullname() { return this.fullname; }
 
-  public void setFullName(String fullName) { this.fullName = fullName; }
+  public void setFullname(String fullName) { this.fullname = fullName; }
 
   public String getEmail() { return this.email; }
 

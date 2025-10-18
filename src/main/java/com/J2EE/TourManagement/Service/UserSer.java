@@ -28,7 +28,7 @@ public class UserSer {
   public CreateUserDTO convertUserToResUserDto(User user) {
     CreateUserDTO resUserDTO = new CreateUserDTO();
     resUserDTO.setId(user.getId());
-    resUserDTO.setFullName(user.getFullName());
+    resUserDTO.setFullName(user.getFullname());
     resUserDTO.setEmail(user.getEmail());
     resUserDTO.setCreatedAt(user.getCreatedAt());
     resUserDTO.setRefreshToken(user.getRefreshToken());
@@ -39,7 +39,7 @@ public class UserSer {
   public UserDTO convertUserToUserDto(User user) {
     UserDTO resUserDTO = new UserDTO();
     resUserDTO.setId(user.getId());
-    resUserDTO.setFullName(user.getFullName());
+    resUserDTO.setFullName(user.getFullname());
     resUserDTO.setEmail(user.getEmail());
     resUserDTO.setCreatedAt(user.getCreatedAt());
     resUserDTO.setStatus(user.getStatus());
@@ -70,7 +70,7 @@ public class UserSer {
         pageUser.getContent()
             .stream()
             .map(item
-                 -> new UserDTO(item.getId(), item.getFullName(),
+                 -> new UserDTO(item.getId(), item.getFullname(),
                                 item.getEmail(), item.getStatus(),
                                 item.getCreatedAt(), item.getUpdatedAt()))
             .collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class UserSer {
   public User putUser(long id, User ReqUser){
     User user = this.userRep.findById(id).isPresent() ?  this.userRep.findById(id).get() : null;
 
-    user.setFullName(ReqUser.getFullName());
+    user.setFullname(ReqUser.getFullname());
     
 
     return this.userRep.save(user);

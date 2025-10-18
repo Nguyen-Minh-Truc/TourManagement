@@ -59,7 +59,7 @@ public class AuthController {
     ResLoginDTO resLoginDTO = new ResLoginDTO();
     User currentUser = this.userService.getUserByName(loginDTO.getUsername());
     ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullName());
+        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname());
 
     String access_token = this.securityUtil.createAccessToken(
         authentication.getName(), userLogin);
@@ -97,7 +97,7 @@ public class AuthController {
 
     User currentUser = this.userService.getUserByName(email);
     ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullName());
+        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname());
     return ResponseEntity.ok().body(userLogin);
   }
 
@@ -115,7 +115,7 @@ public class AuthController {
     ResLoginDTO resLoginDTO = new ResLoginDTO();
     User currentUser = this.userService.getUserByName(email);
     ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullName());
+        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname());
 
     String access_token = this.securityUtil.createAccessToken(email, userLogin);
     resLoginDTO.setAccessToken(access_token);
