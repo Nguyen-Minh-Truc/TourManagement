@@ -1,19 +1,28 @@
 package com.J2EE.TourManagement.Controller;
 
 
+import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Service.TourService;
+import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/tours")
+@RequestMapping("/api/v1/tours")
 public class TourController {
     private final TourService tourService;
 
@@ -23,6 +32,7 @@ public class TourController {
 
     //Create
     @PostMapping
+    @ApiMessage("Thêm tour thành công!")
     public ResponseEntity<Tour> postNewTour(@Valid @RequestBody Tour newTour) {
         Tour tour = tourService.handleSave(newTour);
         return ResponseEntity.status(HttpStatus.CREATED).body(tour);
@@ -30,11 +40,12 @@ public class TourController {
 
     //Read
     @GetMapping
-    public ResponseEntity<List<Tour>> getAllTour() {
-        return ResponseEntity.ok(tourService.handleGetAll());
+    public ResponseEntity<ResultPaginationDTO> fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
+        return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
     }
 
     //Update
+    @ApiMessage("Sửa tour thành công!")
     @PutMapping("/{id}")
     public ResponseEntity<Tour> updateTour(@PathVariable Long id, @Valid @RequestBody Tour tour) throws InvalidException {
         return ResponseEntity.ok(tourService.handleUpdate(id, tour));
@@ -42,23 +53,9 @@ public class TourController {
 
     //Read by id
     @GetMapping("/{id}")
-    public ResponseEntity<Tour> getTourById(@PathVariable Long id) {
+    public ResponseEntity<Tour> getTourById(@PathVariable Long id) throws InvalidException{
         return tourService.handleGetById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok).get();
     }
 
-    //Filter
-    @GetMapping("/filter")
-    public ResponseEntity<Page<Tour>> getFilteredTours(
-            @RequestParam(defaultValue = "") String status,
-            @RequestParam(defaultValue = "") String destination,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction
-    ) {
-        Page<Tour> result = tourService.getPagedTours(status, destination, page, size, sortBy, direction);
-        return ResponseEntity.ok(result);
-    }
 }

@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Controller;
 
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Service.TourPriceService;
+import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.validation.Valid;
 import org.springframework.http.*;
@@ -19,11 +20,13 @@ public class TourPriceController {
         this.tourPriceService = tourPriceService;
     }
 
+    @ApiMessage("Thêm tour price thành công!")
     @PostMapping
     public ResponseEntity<TourPrice> create(@Valid @RequestBody TourPrice price) {
         return ResponseEntity.status(HttpStatus.CREATED).body(tourPriceService.save(price));
     }
 
+    @ApiMessage("Sửa tour price thành công!")
     @PutMapping("/{id}")
     public ResponseEntity<TourPrice> update(@PathVariable Long id, @Valid @RequestBody TourPrice price) throws InvalidException {
         return ResponseEntity.ok(tourPriceService.update(id, price));

@@ -42,7 +42,7 @@ public class TourDetail {
 
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.EAGER)
     @JsonManagedReference(value = "detail-price")
     private List<TourPrice> tourPrices;
 

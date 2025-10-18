@@ -1,36 +1,57 @@
 package com.J2EE.TourManagement.Service;
 
+import com.J2EE.TourManagement.Mapper.TourDetailMapper;
+import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
+import com.J2EE.TourManagement.Model.DTO.Tour.TourDetailDTO;
+import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
+import com.J2EE.TourManagement.Repository.TourRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
+import com.turkraft.springfilter.boot.Filter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class TourDetailService {
 
+    private final TourDetailMapper tourDetailMapper;
+    private final TourRepository tourRepository;
     private final TourDetailRepository tourDetailRepository;
 
-    public TourDetailService(TourDetailRepository tourDetailRepository) {
-        this.tourDetailRepository = tourDetailRepository;
+    public List<TourDetailDTO> handleGetAll(Long tourId) throws InvalidException {
+        Optional<Tour> tourOpt = tourRepository.findById(tourId);
+
+        if (tourOpt.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy TourId để getall (id = " + tourId + ")");
+        }
+
+        List<TourDetail> details = tourOpt.get().getTourDetails();
+
+        // Map entity -> DTO
+        return tourDetailMapper.toDTOList(details);
     }
 
     //Create
-    public TourDetail save(TourDetail detail) throws InvalidException {
+    public TourDetail handleSave(TourDetail detail) throws InvalidException {
         Long tourId = detail.getTour().getId();
-        if (!tourDetailRepository.existsById(tourId))
-        {
+        if (!tourRepository.existsById(tourId)) {
             throw new InvalidException("Không tìm thấy TourId để thêm (id = " + tourId + ")");
         }
         return tourDetailRepository.save(detail);
     }
 
     //Update
-    public TourDetail update(Long id, TourDetail updated) throws InvalidException {
-        if (!tourDetailRepository.existsById(id))
-        {
+    public TourDetail handleUpdate(Long id, TourDetail updated) throws InvalidException {
+        if (!tourDetailRepository.existsById(id)) {
             throw new InvalidException("Không tìm thấy TourDetail ID = " + id);
         }
 
