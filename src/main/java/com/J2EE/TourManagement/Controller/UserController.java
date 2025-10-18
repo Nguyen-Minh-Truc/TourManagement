@@ -37,7 +37,6 @@ public class UserController {
   @ApiMessage("Thêm người dùng thành công.")
   public ResponseEntity<?> postNewUser(@RequestBody @Valid User newUser)
       throws InvalidException {
-
     boolean isEmailExist = this.userSer.isEmailExist(newUser.getEmail());
     if (isEmailExist) {
       throw new InvalidException("Email đã tồn tại. Vui lòng nhập email khác.");
@@ -49,6 +48,7 @@ public class UserController {
     CreateUserDTO resUserDTO = this.userSer.convertUserToResUserDto(user);
     return ResponseEntity.status(HttpStatus.CREATED).body(resUserDTO);
   }
+
 
   @GetMapping("/users")
   public ResponseEntity<?> fetchAllUser(@Filter Specification<User> spec,

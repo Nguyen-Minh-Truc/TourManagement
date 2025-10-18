@@ -32,7 +32,7 @@ public class Booking {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_user", nullable = false)
-   @JsonBackReference
+   @JsonBackReference("user-booking")
   private User user;
 
   private double totalPrice;
