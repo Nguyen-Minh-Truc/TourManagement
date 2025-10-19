@@ -39,7 +39,7 @@ public class TourDetailController {
     }
 
     @ApiMessage("Sửa tour detail thành công!")
-    @PutMapping("/{id}/details")
+    @PutMapping("/details/{id}")
     public ResponseEntity<TourDetail> update(@PathVariable Long id, @Valid @RequestBody TourDetail detail) throws InvalidException {
         return ResponseEntity.ok(tourDetailService.handleUpdate(id, detail));
     }

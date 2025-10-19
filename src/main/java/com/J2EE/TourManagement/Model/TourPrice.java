@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Data
 @Entity
 @Table(name = "tour_prices")
+@Getter
+@Setter
 public class TourPrice {
 
     @Id

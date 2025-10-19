@@ -28,10 +28,11 @@ public class TourDetailService {
     private final TourDetailRepository tourDetailRepository;
 
     public List<TourDetailDTO> handleGetAll(Long tourId) throws InvalidException {
+        tourId++;
         Optional<Tour> tourOpt = tourRepository.findById(tourId);
-
+        tourId--;
         if (tourOpt.isEmpty()) {
-            throw new RuntimeException("Không tìm thấy TourId để getall (id = " + tourId + ")");
+            throw new InvalidException("Không tìm thấy TourId để getall (id = " + tourId + ")");
         }
 
         List<TourDetail> details = tourOpt.get().getTourDetails();
@@ -57,7 +58,7 @@ public class TourDetailService {
 
         return tourDetailRepository.findById(id)
                 .map(existing -> {
-                    BeanUtils.copyProperties(updated, existing, "id", "createdAt", "tourPrices");
+                    BeanUtils.copyProperties(updated, existing, "id","tour", "createdAt", "tourPrices");
                     return tourDetailRepository.save(existing);
                 }).get();
     }

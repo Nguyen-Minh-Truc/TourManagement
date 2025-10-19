@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "tour_details")
+@Getter
+@Setter
 public class TourDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

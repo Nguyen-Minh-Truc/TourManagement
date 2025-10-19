@@ -3,9 +3,7 @@ package com.J2EE.TourManagement.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
+@Getter
+@Setter
 @Table(name = "tours")
 public class Tour {
     @Id
