@@ -24,7 +24,7 @@ public class TourPriceController {
     }
 
     @GetMapping("/{id}/prices")
-    public ResponseEntity<List<TourPriceDTO>> fetchTourPriceByTourId(@PathVariable Long id) throws InvalidException {
+    public ResponseEntity<List<TourPriceDTO>> fetchTourPriceByTourId(@PathVariable("id") Long id) throws InvalidException {
         return ResponseEntity.ok(tourPriceService.handleGetAll(id));
     }
 

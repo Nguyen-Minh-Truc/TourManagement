@@ -1,7 +1,7 @@
-package  com.J2EE.TourManagement.Util.error;
+package com.J2EE.TourManagement.Util.error;
 
+import com.J2EE.TourManagement.Model.RestResponse;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,8 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.J2EE.TourManagement.Model.RestResponse;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalException {
@@ -31,12 +30,11 @@ public class GlobalException {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ExceptionHandler({MethodArgumentNotValidException.class})
   public ResponseEntity<RestResponse<Object>>
   validationError(MethodArgumentNotValidException ex) {
     BindingResult result = ex.getBindingResult();
     final List<FieldError> fieldErrors = result.getFieldErrors();
-
     RestResponse<Object> res = new RestResponse<>();
     res.setStatusCode(HttpStatus.BAD_REQUEST.value());
     res.setError(ex.getBody().getDetail());
@@ -50,7 +48,16 @@ public class GlobalException {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
   }
 
- 
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<RestResponse<Object>>
+  handleNoResourceFound(NoResourceFoundException ex) {
+    RestResponse<Object> res = new RestResponse<>();
+    res.setStatusCode(HttpStatus.NOT_FOUND.value());
+    res.setError("Resource Not Found");
+    res.setMessage("Không tìm thấy đường dẫn: " + ex.getResourcePath());
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+  }
 
   @ExceptionHandler(InvalidException.class)
   public ResponseEntity<RestResponse<Object>>

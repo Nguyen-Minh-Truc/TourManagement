@@ -28,7 +28,7 @@ public class TourDetailController {
 
     //Read by tour id
     @GetMapping("/{tourId}/details")
-    public ResponseEntity<List<TourDetailDTO>> fetchTourDetailByTourId(@PathVariable Long tourId) throws InvalidException {
+    public ResponseEntity<List<TourDetailDTO>> fetchTourDetailByTourId(@PathVariable("tourId") Long tourId) throws InvalidException {
         return ResponseEntity.ok(tourDetailService.handleGetAll(tourId));
     }
 

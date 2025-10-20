@@ -54,4 +54,9 @@ public class TourPriceService {
                 }).get();
     }
 
+    public TourPrice getTourPriceById(long id){
+        TourPrice tourPrice = this.tourPriceRepository.findById(id).isPresent() ? this.tourPriceRepository.findById(id).get() : null;
+        return tourPrice;
+    }
+
 }
