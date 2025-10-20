@@ -6,11 +6,8 @@ import com.J2EE.TourManagement.Model.DTO.BookingDTO;
 import com.J2EE.TourManagement.Model.DTO.BookingResponseDTO;
 import com.J2EE.TourManagement.Model.DTO.Meta;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
-import com.J2EE.TourManagement.Model.DTO.UserDTO;
-import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Repository.BookingDetailRep;
 import com.J2EE.TourManagement.Repository.BookingRep;
-import com.J2EE.TourManagement.Repository.PaymentRep;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 
@@ -132,14 +129,14 @@ public class BookingSer {
       newDetail.setPrice(dtoDetail.getQuantity() * dtoDetail.getPrice());
       newDetail.setStatus(true);
       totalPrice += newDetail.getPrice();
-      existingDetails.add(newDetail); // Thêm vào collection gốc
+      existingDetails.add(newDetail); 
     }
 
     booking.setTotalPrice(totalPrice);
-    // Không set lại bookingDetails — đã thao tác trực tiếp rồi
-
     Booking saved = bookingRep.save(booking);
     return new BookingResponseDTO(saved);
   }
+
+
 
 }

@@ -49,7 +49,6 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(resUserDTO);
   }
 
-
   @GetMapping("/users")
   public ResponseEntity<?> fetchAllUser(@Filter Specification<User> spec,
                                         Pageable pageable) {
@@ -80,4 +79,16 @@ public class UserController {
     User user = this.userSer.putUser(id, userCurrent);
     return ResponseEntity.ok(this.userSer.convertUserToUserDto(user));
   }
+
+  @PutMapping("users/delete/{id}")
+  public ResponseEntity<UserDTO> putMethodName(@PathVariable("id") long id) throws InvalidException {
+   boolean isId = this.userSer.isIdExist(id);
+    if (!isId) {
+      throw new InvalidException("Id không tồn tại.");
+    }
+
+    User user = this.userSer.setStatusUser(id);
+    return ResponseEntity.ok(this.userSer.convertUserToUserDto(user));
+  }
+  
 }

@@ -91,28 +91,38 @@ public class UserSer {
     return user;
   }
 
-  public User getUserByName(String name){
+  public User getUserByName(String name) {
     return this.userRep.findByEmail(name);
   }
 
-  public User putUser(long id, User ReqUser){
-    User user = this.userRep.findById(id).isPresent() ?  this.userRep.findById(id).get() : null;
+  public User putUser(long id, User ReqUser) {
+    User user = this.userRep.findById(id).isPresent()
+                    ? this.userRep.findById(id).get()
+                    : null;
 
     user.setFullname(ReqUser.getFullname());
-    
 
     return this.userRep.save(user);
   }
 
-    public void UpdateRefreshToken(String token, String email){
+  public void UpdateRefreshToken(String token, String email) {
     User currentUser = this.getUserByName(email);
-    if(currentUser != null){
+    if (currentUser != null) {
       currentUser.setRefreshToken(token);
       this.userRep.save(currentUser);
     }
-  } 
+  }
 
-    public User getUserByRefreshTokenAnhEmail (String token, String email){
+  public User getUserByRefreshTokenAnhEmail(String token, String email) {
     return this.userRep.findByRefreshTokenAndEmail(token, email);
+  }
+
+  public User setStatusUser(long id) {
+    User user = this.userRep.findById(id).isPresent()
+                    ? this.userRep.findById(id).get()
+                    : null;
+
+    user.setStatus(false);
+    return user;
   }
 }

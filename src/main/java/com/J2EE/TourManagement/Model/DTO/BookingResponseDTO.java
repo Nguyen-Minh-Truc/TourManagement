@@ -31,8 +31,7 @@ public class BookingResponseDTO {
         this.updatedAt = booking.getUpdatedAt();
         this.bookingDetails = booking.getBookingDetails();
     }
-
-
+    
     public long getId() {
         return this.id;
     }

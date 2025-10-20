@@ -9,6 +9,7 @@ import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Model.DTO.PaymentDTO;
 import com.J2EE.TourManagement.Repository.BookingRep;
 import com.J2EE.TourManagement.Repository.PaymentRep;
+import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import com.J2EE.TourManagement.Util.constan.EnumStatusPayment;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 
@@ -26,18 +27,15 @@ public class PaymentSer {
         Booking booking = this.bookingRep.findById(paymentDTO.getId_booking()).isPresent()
                           ? this.bookingRep.findById(paymentDTO.getId_booking()).get()
                           : null;
-                          
         Payment payment = new Payment();
-
-
         if(booking.getPayment() != null){
                             throw new InvalidException("Booking đã thanh toán. ");
                           }
 
+        booking.setStatus(EnumStatusBooking.valueOf("COMPLETED"));
         payment.setBooking(booking);
         payment.setMethod(paymentDTO.getMethod());
         payment.setStatus(EnumStatusPayment.valueOf("SUCCESS"));
-      
         return this.paymentRep.save(payment);
     }
 
