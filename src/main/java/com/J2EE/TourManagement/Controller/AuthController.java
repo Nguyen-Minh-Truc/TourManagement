@@ -6,6 +6,8 @@ import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Service.UserSer;
 import com.J2EE.TourManagement.Util.SecurityUtil;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
+import com.J2EE.TourManagement.Util.error.InvalidException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -140,5 +142,29 @@ public class AuthController {
     return ResponseEntity.ok()
         .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
         .body(resLoginDTO);
+  }
+
+  @PostMapping("/auth/logout")
+  public ResponseEntity<?> logOut() throws InvalidException {
+    String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                       ? SecurityUtil.getCurrentUserLogin().get()
+                       : "";
+
+    if (email.equals("")) {
+      throw new InvalidException("Access Token không hợp lệ. ");
+    }
+
+    this.userService.UpdateRefreshToken("null", email);
+
+    ResponseCookie responseCookie = ResponseCookie.from("refresh_Token", null)
+                                        .httpOnly(true)
+                                        .secure(true)
+                                        .path("/")
+                                        .maxAge(0)
+                                        .build();
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+        .body(null);
   }
 }
