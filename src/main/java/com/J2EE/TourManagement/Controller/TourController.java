@@ -23,49 +23,49 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/tours")
 public class TourController {
-  private final TourService tourService;
+    private final TourService tourService;
 
-  public TourController(TourService tourService) {
-    this.tourService = tourService;
-  }
-
-  // Create
-  @PostMapping
-  @ApiMessage("thêm tour thành công.")
-
-  public ResponseEntity<Tour> postNewTour(@Valid @RequestBody Tour newTour) {
-    Tour tour = tourService.handleSave(newTour);
-    return ResponseEntity.status(HttpStatus.CREATED).body(tour);
-  }
-
-  // Read
-  @GetMapping
-  public ResponseEntity<ResultPaginationDTO>
-  fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
-    return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<?> getTourById(@PathVariable("id") long id)
-      throws InvalidException {
-    boolean isId = this.tourService.checkIdExists(id);
-    if (!isId) {
-      throw new InvalidException("không tìm thấy id này.");
+    public TourController(TourService tourService) {
+        this.tourService = tourService;
     }
 
-    return ResponseEntity.ok().body(this.tourService.handleGetById(id));
-  }
+    // Create
+    @PostMapping
+    @ApiMessage("thêm tour thành công.")
+    public ResponseEntity<Tour> postNewTour(@Valid @RequestBody Tour newTour) {
+        Tour tour = tourService.handleSave(newTour);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tour);
+    }
 
-  @PutMapping("/{id}")
-  @ApiMessage("cập nhật tour thành công.")
-  public ResponseEntity<Tour> updateTour(@PathVariable Long id,
-                                         @RequestBody Tour tour) throws InvalidException {
-    return ResponseEntity.ok(tourService.handleUpdate(id, tour));
-  }
+    // Read
+    @GetMapping
+    public ResponseEntity<ResultPaginationDTO>
+    fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
+        return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
+    }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteTour(@PathVariable Long id) {
-    tourService.handleDelete(id);
-    return ResponseEntity.noContent().build();
-  }
+    //read
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTourById(@PathVariable("id") long id)
+            throws InvalidException {
+        boolean isId = this.tourService.checkIdExists(id);
+        if (!isId) {
+            throw new InvalidException("không tìm thấy id này.");
+        }
+
+        return ResponseEntity.ok().body(this.tourService.handleGetById(id));
+    }
+
+    @PutMapping("/{id}")
+    @ApiMessage("cập nhật tour thành công.")
+    public ResponseEntity<Tour> updateTour(@PathVariable Long id,
+                                           @RequestBody Tour tour) throws InvalidException {
+        return ResponseEntity.ok(tourService.handleUpdate(id, tour));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTour(@PathVariable Long id) {
+        tourService.handleDelete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
