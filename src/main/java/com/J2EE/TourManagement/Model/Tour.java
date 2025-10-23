@@ -25,7 +25,7 @@ public class Tour {
     @Size(max = 255, message = "Tiêu đề không được vượt quá 255 ký tự")
     private String title;
 
-    // private String img;
+    private String img;
 
     @Size(max = 500, message = "Mô tả ngắn không được vượt quá 500 ký tự")
     private String shortDesc;
