@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/api/v1")
 public class PaymentController {
-    private static PaymentSer paymentSer;
-    private static BookingSer bookingSer;
+    private final PaymentSer paymentSer;
+    private final BookingSer bookingSer;
     public PaymentController(PaymentSer paymentSer, BookingSer bookingSer){
          this.paymentSer = paymentSer;
          this.bookingSer = bookingSer;

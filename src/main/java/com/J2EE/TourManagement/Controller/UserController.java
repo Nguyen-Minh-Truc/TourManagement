@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
-  private static UserSer userSer;
-  private static PasswordEncoder passwordEncoder;
+  private final UserSer userSer;
+  private final PasswordEncoder passwordEncoder;
   public UserController(UserSer userSer, PasswordEncoder passwordEncoder) {
     this.userSer = userSer;
     this.passwordEncoder = passwordEncoder;
