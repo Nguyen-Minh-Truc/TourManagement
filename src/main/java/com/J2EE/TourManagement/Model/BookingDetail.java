@@ -34,8 +34,9 @@ public class BookingDetail {
   @JoinColumn(name = "id_tour_detail", nullable = false)
   private TourDetail tourDetail;
 
+
   @ManyToOne
-  @JoinColumn(name = "id_tour_price", nullable = false)
+  @JoinColumn(name = "id_tourPrice", nullable = false)
   private TourPrice tourPrice;
 
   private boolean status;

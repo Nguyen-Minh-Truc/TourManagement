@@ -25,6 +25,8 @@ public class TourPrice {
     @JsonBackReference(value = "detail-price")
     private TourDetail tourDetail;
 
+    @Column(name = "priceType")
+    @NotNull()
     @NotBlank(message = "Loại giá không được để trống")
     @Pattern(regexp = "ADULT|CHILD|INFANT|GROUP", message = "Loại giá phải là ADULT, CHILD, INFANT hoặc GROUP")
     private String priceType;
