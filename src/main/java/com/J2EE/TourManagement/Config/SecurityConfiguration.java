@@ -55,15 +55,16 @@ public class SecurityConfiguration {
                                   -> oauth2.jwt(Customizer.withDefaults())
                                          .authenticationEntryPoint(
                                              customAuthenticationEntryPoint))
-        //  .exceptionHandling(
-        //   exceptions -> exceptions
-        //           .authenticationEntryPoint(new
-        //           BearerTokenAuthenticationEntryPoint()) //401
-        //            .accessDeniedHandler(new
-        //            BearerTokenAccessDeniedHandler())) //403
+       
+    //  .exceptionHandling(
+    //   exceptions -> exceptions
+    //           .authenticationEntryPoint(new
+    //           BearerTokenAuthenticationEntryPoint()) //401
+    //            .accessDeniedHandler(new
+    //            BearerTokenAccessDeniedHandler())) //403
 
-        //  tắt đi form login mặc định
-        .formLogin(f -> f.disable())
+    //  tắt đi form login mặc định
+    .formLogin(f -> f.disable())
         // sữ dụng staleless (mặc đinh stalefull)
         .sessionManagement(
             session

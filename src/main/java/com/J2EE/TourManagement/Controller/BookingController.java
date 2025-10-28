@@ -73,4 +73,6 @@ public class BookingController {
         this.bookingSer.updateBooking(id, bookingDTO);
     return ResponseEntity.ok().body(bookingResponseDTO);
   }
+
+  
 }
