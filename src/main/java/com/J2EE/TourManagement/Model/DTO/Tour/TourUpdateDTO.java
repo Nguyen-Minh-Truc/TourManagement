@@ -13,12 +13,12 @@ public class TourUpdateDTO {
     private String longDesc;
 
     @Positive
-    private Integer durationDay;
+    private String duration;
 
     @Positive
     private Integer capacity;
 
-    private String destination;
+    private String location;
 
     @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
     private String status;
@@ -55,12 +55,12 @@ public class TourUpdateDTO {
         this.longDesc = longDesc;
     }
 
-    public Integer getDurationDay() {
-        return durationDay;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setDurationDay(Integer durationDay) {
-        this.durationDay = durationDay;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public Integer getCapacity() {
@@ -72,11 +72,11 @@ public class TourUpdateDTO {
     }
 
     public String getDestination() {
-        return destination;
+        return location;
     }
 
     public void setDestination(String destination) {
-        this.destination = destination;
+        this.location = location;
     }
 
     public String getStatus() {

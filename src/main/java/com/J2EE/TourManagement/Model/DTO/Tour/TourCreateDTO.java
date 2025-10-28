@@ -15,7 +15,7 @@ public class TourCreateDTO {
 
     @NotNull(message = "Vui lòng nhập số ngày tour")
     @Positive(message = "Thời lượng tour phải lớn hơn 0")
-    private Integer durationDay;
+    private String duration;
 
     @NotNull(message = "Vui lòng nhập sức chứa")
     @Positive(message = "Sức chứa phải lớn hơn 0")
@@ -23,7 +23,7 @@ public class TourCreateDTO {
 
     @NotBlank(message = "Điểm đến không được để trống")
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
-    private String destination;
+    private String location;
 
     private String status; // tùy chọn, nếu không nhập thì entity sẽ set DRAFT
 
@@ -51,12 +51,12 @@ public class TourCreateDTO {
         this.longDesc = longDesc;
     }
 
-    public Integer getDurationDay() {
-        return durationDay;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setDurationDay(Integer durationDay) {
-        this.durationDay = durationDay;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public Integer getCapacity() {
@@ -68,11 +68,11 @@ public class TourCreateDTO {
     }
 
     public String getDestination() {
-        return destination;
+        return location;
     }
 
     public void setDestination(String destination) {
-        this.destination = destination;
+        this.location = location;
     }
 
     public String getStatus() {

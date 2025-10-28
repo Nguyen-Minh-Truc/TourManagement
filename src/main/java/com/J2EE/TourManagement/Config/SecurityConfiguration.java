@@ -46,7 +46,7 @@ public class SecurityConfiguration {
             authz
             -> authz
                    .requestMatchers("/", "/api/v1/login",
-                                    "/api/v1/auth/refresh", "/storage/**")
+                                    "/api/v1/auth/refresh", "/api/v1/register")
                    .permitAll()
                    //   bất cứ url khác phải đăng nhập mới được
                    .anyRequest()
@@ -55,16 +55,16 @@ public class SecurityConfiguration {
                                   -> oauth2.jwt(Customizer.withDefaults())
                                          .authenticationEntryPoint(
                                              customAuthenticationEntryPoint))
-       
-    //  .exceptionHandling(
-    //   exceptions -> exceptions
-    //           .authenticationEntryPoint(new
-    //           BearerTokenAuthenticationEntryPoint()) //401
-    //            .accessDeniedHandler(new
-    //            BearerTokenAccessDeniedHandler())) //403
 
-    //  tắt đi form login mặc định
-    .formLogin(f -> f.disable())
+        //  .exceptionHandling(
+        //   exceptions -> exceptions
+        //           .authenticationEntryPoint(new
+        //           BearerTokenAuthenticationEntryPoint()) //401
+        //            .accessDeniedHandler(new
+        //            BearerTokenAccessDeniedHandler())) //403
+
+        //  tắt đi form login mặc định
+        .formLogin(f -> f.disable())
         // sữ dụng staleless (mặc đinh stalefull)
         .sessionManagement(
             session

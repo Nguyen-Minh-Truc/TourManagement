@@ -57,6 +57,7 @@ public class TourService {
     //get by id
 
     public Tour handleGetById(Long id) {
+
         Tour tour = this.tourRepository.findById(id).isPresent() ? this.tourRepository.findById(id).get() : null;
         return tour;
 

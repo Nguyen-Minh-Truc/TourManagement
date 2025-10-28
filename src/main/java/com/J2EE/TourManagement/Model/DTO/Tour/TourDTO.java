@@ -6,11 +6,12 @@ import java.util.List;
 public class TourDTO {
     private Long id;
     private String title;
+    private String imageUrl;
     private String shortDesc;
     private String longDesc;
-    private Integer durationDay;
+    private String duration;
     private Integer capacity;
-    private String destination;
+    private String location;
     private String status;
 
     private LocalDateTime createdAt;
@@ -20,14 +21,15 @@ public class TourDTO {
 
     private List<TourDetailDTO> tourDetails;
 
-    public TourDTO(Long id, String title, String shortDesc, String longDesc, Integer durationDay, Integer capacity, String destination, String status, LocalDateTime createdAt, LocalDateTime updatedAt, String createdBy, String updatedBy, List<TourDetailDTO> tourDetails) {
+    public TourDTO(Long id, String title,String imageUrl, String shortDesc, String longDesc, String duration, Integer capacity, String location, String status, LocalDateTime createdAt, LocalDateTime updatedAt, String createdBy, String updatedBy, List<TourDetailDTO> tourDetails) {
         this.id = id;
         this.title = title;
+        this.imageUrl = imageUrl;
         this.shortDesc = shortDesc;
         this.longDesc = longDesc;
-        this.durationDay = durationDay;
+        this.duration = duration;
         this.capacity = capacity;
-        this.destination = destination;
+        this.location = location;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -52,6 +54,13 @@ public class TourDTO {
         this.title = title;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getShortDesc() {
         return shortDesc;
     }
@@ -68,12 +77,12 @@ public class TourDTO {
         this.longDesc = longDesc;
     }
 
-    public Integer getDurationDay() {
-        return durationDay;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setDurationDay(Integer durationDay) {
-        this.durationDay = durationDay;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public Integer getCapacity() {
@@ -84,12 +93,12 @@ public class TourDTO {
         this.capacity = capacity;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getLocation() {
+        return location;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getStatus() {
