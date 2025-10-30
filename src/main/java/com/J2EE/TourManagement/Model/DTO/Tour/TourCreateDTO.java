@@ -21,9 +21,8 @@ public class TourCreateDTO {
 
     private String imageUrl;
 
-    @NotNull(message = "Vui lòng nhập số ngày tour")
-    @Positive(message = "Thời lượng tour phải lớn hơn 0")
-    private Integer durationDay;
+    @Pattern(regexp = "^\\d+ ngày \\d+ đêm$", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
+    private String duration;
 
     @NotNull(message = "Vui lòng nhập sức chứa")
     @Positive(message = "Sức chứa phải lớn hơn 0")
@@ -31,7 +30,7 @@ public class TourCreateDTO {
 
     @NotBlank(message = "Điểm đến không được để trống")
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
-    private String destination;
+    private String location;
 
     private String status; // tùy chọn, nếu không nhập thì entity sẽ set DRAFT
 }

@@ -16,9 +16,9 @@ public class TourDTO {
     private String title;
     private String shortDesc;
     private String longDesc;
-    private Integer durationDay;
+    private Integer duration;
     private Integer capacity;
-    private String destination;
+    private String location;
     private String status;
     private String imageUrl;
 

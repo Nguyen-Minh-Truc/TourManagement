@@ -29,11 +29,11 @@ public class Tour {
 
     private String imageUrl;
 
-    private Integer durationDay;
+    private String duration;
 
     private Integer capacity;
 
-    private String destination;
+    private String location;
 
     @NotBlank(message = "Trạng thái không được để trống")
     @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
