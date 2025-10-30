@@ -2,18 +2,20 @@ package com.J2EE.TourManagement.Model.DTO;
 
 import com.J2EE.TourManagement.Model.Booking;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.List;
 
 public class UserDTO {
   private long id;
 
+  @NotBlank(message = "Tên người dùng không được để trống.")
   private String fullName;
 
+  @NotBlank(message = "Email người dùng không được để trống.")
   private String email;
 
   private boolean status;
-
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant createdAt;
@@ -21,81 +23,47 @@ public class UserDTO {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant updatedAt;
 
+  private List<Booking> bookings;
 
-   private List<Booking> bookings;
+  public UserDTO() {}
 
-    public UserDTO() {
-    }
+  public UserDTO(long id, String fullName, String email, boolean status,
+                 Instant createdAt, Instant updatedAt) {
+    this.id = id;
+    this.fullName = fullName;
+    this.email = email;
+    this.status = status;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 
-    public UserDTO(long id, String fullName, String email, boolean status, Instant createdAt, Instant updatedAt) {
-        this.id = id;
-        this.fullName = fullName;
-        this.email = email;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+  public long getId() { return this.id; }
 
+  public void setId(long id) { this.id = id; }
 
-    public long getId() {
-        return this.id;
-    }
+  public String getFullName() { return this.fullName; }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public String getFullName() {
-        return this.fullName;
-    }
+  public String getEmail() { return this.email; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+  public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return this.email;
-    }
+  public boolean isStatus() { return this.status; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public boolean getStatus() { return this.status; }
 
-    public boolean isStatus() {
-        return this.status;
-    }
+  public void setStatus(boolean status) { this.status = status; }
 
-    public boolean getStatus() {
-        return this.status;
-    }
+  public Instant getCreatedAt() { return this.createdAt; }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+  public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
-    }
+  public Instant getUpdatedAt() { return this.updatedAt; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+  public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 
-    public Instant getUpdatedAt() {
-        return this.updatedAt;
-    }
+  public List<Booking> getBookings() { return this.bookings; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public List<Booking> getBookings() {
-        return this.bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
-
+  public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
 }

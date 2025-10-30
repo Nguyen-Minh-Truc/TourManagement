@@ -1,11 +1,16 @@
 package com.J2EE.TourManagement.Controller;
 
+import com.J2EE.TourManagement.Model.DTO.CreateUserDTO;
 import com.J2EE.TourManagement.Model.DTO.LoginDTO;
+import com.J2EE.TourManagement.Model.DTO.RegisterDTO;
 import com.J2EE.TourManagement.Model.DTO.ResLoginDTO;
 import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Service.UserSer;
 import com.J2EE.TourManagement.Util.SecurityUtil;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
+import com.J2EE.TourManagement.Util.error.InvalidException;
+import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -14,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -24,22 +30,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 @RestController
 @RequestMapping("/api/v1")
 public class AuthController {
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final SecurityUtil securityUtil;
   private final UserSer userService;
+  private final PasswordEncoder passwordEncoder;
 
   @Value("${mt.jwt.refresh-token-validity-in-seconds}")
   private long refreshTokenExpiration;
 
   public AuthController(
       AuthenticationManagerBuilder authenticationManagerBuilder,
-      SecurityUtil securityUtil, UserSer userService) {
+      SecurityUtil securityUtil, UserSer userService,
+      PasswordEncoder passwordEncoder) {
     this.authenticationManagerBuilder = authenticationManagerBuilder;
     this.securityUtil = securityUtil;
     this.userService = userService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @PostMapping("/login")
@@ -141,4 +152,54 @@ public class AuthController {
         .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
         .body(resLoginDTO);
   }
+
+  @PostMapping("/auth/logout")
+  public ResponseEntity<?> logOut() throws InvalidException {
+    String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                       ? SecurityUtil.getCurrentUserLogin().get()
+                       : "";
+
+    if (email.equals("")) {
+      throw new InvalidException("Access Token không hợp lệ. ");
+    }
+
+    this.userService.UpdateRefreshToken("null", email);
+
+    ResponseCookie responseCookie = ResponseCookie.from("refresh_Token", null)
+                                        .httpOnly(true)
+                                        .secure(true)
+                                        .path("/")
+                                        .maxAge(0)
+                                        .build();
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+        .body("Đăng xuất thành Công.");
+  }
+
+  @PostMapping("/auth/register")
+  @ApiMessage("Đăng kí thành Công.")
+  public ResponseEntity<?>
+  postRegister(@RequestBody @Valid RegisterDTO RegisterDTO)
+      throws InvalidException {
+    boolean isEmailExist =
+        this.userService.isEmailExist(RegisterDTO.getEmail());
+
+    if (isEmailExist) {
+      throw new InvalidException("Email đã tồn tại. Vui lòng nhập email khác.");
+    }
+    if (!RegisterDTO.getPassword().equals(RegisterDTO.getConfirmPassword())) {
+      throw new InvalidException("Nhập lại mật khẩu không chính xác.");
+    }
+
+    String hashPassword =
+        this.passwordEncoder.encode(RegisterDTO.getPassword());
+    RegisterDTO.setPassword(hashPassword);
+
+    User newUser = this.userService.convertRegisterDtoToUser(RegisterDTO);
+    User user = this.userService.handleSaveUser(newUser);
+    CreateUserDTO resUserDTO = this.userService.convertUserToResUserDto(user);
+    return ResponseEntity.ok(resUserDTO);
+  }
+
 }

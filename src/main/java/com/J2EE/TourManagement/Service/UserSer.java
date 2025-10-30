@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Model.DTO.CreateUserDTO;
 import com.J2EE.TourManagement.Model.DTO.Meta;
+import com.J2EE.TourManagement.Model.DTO.RegisterDTO;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Model.DTO.UserDTO;
 import com.J2EE.TourManagement.Model.User;
@@ -123,6 +124,15 @@ public class UserSer {
                     : null;
 
     user.setStatus(false);
+    return user;
+  }
+
+
+   public User convertRegisterDtoToUser(RegisterDTO registerDTO){
+    User user = new User();
+    user.setFullname(registerDTO.getFullname());
+    user.setEmail(registerDTO.getEmail());
+    user.setPassword(registerDTO.getPassword());
     return user;
   }
 }
