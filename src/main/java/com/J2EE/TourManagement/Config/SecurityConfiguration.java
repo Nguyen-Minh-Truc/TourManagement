@@ -46,7 +46,7 @@ public class SecurityConfiguration {
             authz
             -> authz
                    .requestMatchers("/", "/api/v1/login",
-                                    "/api/v1/auth/refresh", "/api/v1/users/create")
+                                    "/api/v1/auth/refresh", "/api/v1/register")
                    .permitAll()
                    //   bất cứ url khác phải đăng nhập mới được
                    .anyRequest()
@@ -55,6 +55,7 @@ public class SecurityConfiguration {
                                   -> oauth2.jwt(Customizer.withDefaults())
                                          .authenticationEntryPoint(
                                              customAuthenticationEntryPoint))
+
         //  .exceptionHandling(
         //   exceptions -> exceptions
         //           .authenticationEntryPoint(new

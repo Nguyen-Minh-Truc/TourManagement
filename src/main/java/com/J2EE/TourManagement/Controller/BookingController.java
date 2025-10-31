@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class BookingController {
-  private static BookingSer bookingSer;
+  private final BookingSer bookingSer;
   public BookingController(BookingSer bookingSer) {
     this.bookingSer = bookingSer;
   }
@@ -73,4 +73,6 @@ public class BookingController {
         this.bookingSer.updateBooking(id, bookingDTO);
     return ResponseEntity.ok().body(bookingResponseDTO);
   }
+
+  
 }
