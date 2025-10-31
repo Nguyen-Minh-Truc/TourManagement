@@ -39,7 +39,6 @@ public class Tour {
 
     @Column(name = "duration")
     @NotNull(message = "Vui lòng nhập số ngày tour")
-    @Positive(message = "Thời lượng tour phải lớn hơn 0")
     private String duration;
 
     @Column(name = "capacity")
