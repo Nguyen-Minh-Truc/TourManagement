@@ -1,9 +1,6 @@
 package com.J2EE.TourManagement.Controller;
 
-import com.J2EE.TourManagement.Model.DTO.CreateUserDTO;
-import com.J2EE.TourManagement.Model.DTO.LoginDTO;
-import com.J2EE.TourManagement.Model.DTO.RegisterDTO;
-import com.J2EE.TourManagement.Model.DTO.ResLoginDTO;
+import com.J2EE.TourManagement.Model.DTO.*;
 import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Service.UserSer;
 import com.J2EE.TourManagement.Util.SecurityUtil;
@@ -56,7 +53,6 @@ public class AuthController {
   @PostMapping("/login")
   @ApiMessage("Đăng nhập thành công")
   public ResponseEntity<ResLoginDTO> login(@RequestBody LoginDTO loginDTO) {
-    // Nạp input gồm username/password vào Security
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),
                                                 loginDTO.getPassword());
@@ -69,8 +65,14 @@ public class AuthController {
     SecurityContextHolder.getContext().setAuthentication(authentication);
     ResLoginDTO resLoginDTO = new ResLoginDTO();
     User currentUser = this.userService.getUserByName(loginDTO.getUsername());
+      RoleDTO roleDTO = new RoleDTO(
+              currentUser.getRole().getId(),
+              currentUser.getRole().getNameRole(),
+                currentUser.getRole().getDescription(),
+                currentUser.getRole().isStatus()
+      );
     ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname());
+        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname(), roleDTO);
 
     String access_token = this.securityUtil.createAccessToken(
         authentication.getName(), userLogin);
@@ -107,8 +109,14 @@ public class AuthController {
                        : "";
 
     User currentUser = this.userService.getUserByName(email);
+    RoleDTO roleDTO = new RoleDTO(
+            currentUser.getRole().getId(),
+            currentUser.getRole().getNameRole(),
+            currentUser.getRole().getDescription(),
+            currentUser.getRole().isStatus()
+    );
     ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname());
+        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname(), roleDTO);
     return ResponseEntity.ok().body(userLogin);
   }
 
@@ -125,8 +133,14 @@ public class AuthController {
 
     ResLoginDTO resLoginDTO = new ResLoginDTO();
     User currentUser = this.userService.getUserByName(email);
+    RoleDTO roleDTO = new RoleDTO(
+            currentUser.getRole().getId(),
+            currentUser.getRole().getNameRole(),
+            currentUser.getRole().getDescription(),
+            currentUser.getRole().isStatus()
+    );
     ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname());
+        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname(), roleDTO);
 
     String access_token = this.securityUtil.createAccessToken(email, userLogin);
     resLoginDTO.setAccessToken(access_token);

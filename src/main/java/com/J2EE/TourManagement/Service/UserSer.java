@@ -46,6 +46,7 @@ public class UserSer {
     resUserDTO.setStatus(user.getStatus());
     resUserDTO.setUpdatedAt(user.getUpdatedAt());
     resUserDTO.setBookings(user.getBookings());
+    resUserDTO.setRole(user.getRole());
     return resUserDTO;
   }
 
@@ -73,6 +74,7 @@ public class UserSer {
             .map(item
                  -> new UserDTO(item.getId(), item.getFullname(),
                                 item.getEmail(), item.getStatus(),
+                                item.getRole(),
                                 item.getCreatedAt(), item.getUpdatedAt()))
             .collect(Collectors.toList());
 

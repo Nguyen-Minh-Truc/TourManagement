@@ -19,8 +19,10 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
+  @Column(name = "fullname")
   @NotBlank(message = "Tên người dùng không được để trống.")
   private String fullname;
+    @Column(name = "email", unique = true)
   @NotBlank(message = "Email người dùng không được để trống.")
   private String email;
   @NotBlank(message = "Mật khẩu người dùng không được để trống.")
@@ -52,7 +54,7 @@ public class User {
 
   public String getFullname() { return this.fullname; }
 
-  public void setFullname(String fullName) { this.fullname = fullName; }
+  public void setFullname(String fullname) { this.fullname = fullname; }
 
   public String getEmail() { return this.email; }
 
@@ -96,4 +98,11 @@ public class User {
   public void handleBeforeUpdate() {
     this.updatedAt = Instant.now();
   }
+
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
