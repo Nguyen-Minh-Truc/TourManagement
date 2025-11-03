@@ -8,44 +8,27 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "roles")
 public class Role {
-    @Id
-    private int id;
+  @Id private long id;
 
-    @Column(name = "nameRole")
-    private String nameRole;
+  @Column(name = "nameRole") private String nameRole;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "description") private String description;
 
-    @Column(name = "status")
-    private boolean status;
+  @Column(name = "status") private boolean status;
 
-    public int getId() {
-        return id;
-    }
+  public long getId() { return id; }
 
+  public String getNameRole() { return nameRole; }
 
-    public String getNameRole() {
-        return nameRole;
-    }
+  public void setNameRole(String nameRole) { this.nameRole = nameRole; }
 
-    public void setNameRole(String nameRole) {
-        this.nameRole = nameRole;
-    }
+  public String getDescription() { return description; }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public boolean isStatus() { return status; }
 
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+  public void setStatus(boolean status) { this.status = status; }
 }
