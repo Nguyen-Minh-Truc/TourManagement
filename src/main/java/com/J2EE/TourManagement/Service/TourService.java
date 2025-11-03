@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
+// import com.J2EE.TourManagement.Model.DTO.Tour.TourCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourDTO;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.transaction.Transactional;
@@ -30,7 +31,23 @@ public class TourService {
         return tourRepository.save(tour);
     }
 
+    //  public Tour convertToEntity(TourCreateDTO dto) {
+    //     Tour tour = new Tour();
+    //     tour.setTitle(dto.getTitle());
+    //     tour.setShortDesc(dto.getShortDesc());
+    //     tour.setLongDesc(dto.getLongDesc());
+    //     tour.setDuration(dto.getDuration());
+    //     tour.setCapacity(dto.getCapacity());
+    //     tour.setLocation(dto.getDestination()); // hoặc dto.getLocation() nếu đã sửa method
+    //     tour.setStatus(dto.getStatus() != null ? dto.getStatus() : "DRAFT");
+    //     tour.setRating(0.0); // gán mặc định nếu chưa có đánh giá
+    //     tour.setCreatedBy("admin"); // tuỳ hệ thống có user login thì gán user hiện tại
+
+    //     return tour;
+    // }
+
     //Read
+    @Transactional
     public ResultPaginationDTO handleGetAll(Specification<Tour> spec, Pageable pageable) {
         Page<Tour> tours = tourRepository.findAll(spec, pageable);
 
@@ -55,7 +72,7 @@ public class TourService {
     }
 
     //get by id
-
+    @Transactional
     public Tour handleGetById(Long id) {
 
         Tour tour = this.tourRepository.findById(id).isPresent() ? this.tourRepository.findById(id).get() : null;
@@ -66,6 +83,7 @@ public class TourService {
 
 
     //xoa
+    @Transactional
     public void  handleDelete(Long id) {
         if (!this.tourRepository.existsById(id)) {
             throw new RuntimeException("Không tìm thấy tour để xóa (id = " + id + ")");
@@ -73,6 +91,7 @@ public class TourService {
         this.tourRepository.deleteById(id);
     }
 
+    @Transactional
     public boolean checkIdExists(long id){
         return this.tourRepository.existsById(id);
     }

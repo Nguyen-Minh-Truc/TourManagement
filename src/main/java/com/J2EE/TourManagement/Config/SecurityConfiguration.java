@@ -46,7 +46,7 @@ public class SecurityConfiguration {
             authz
             -> authz
                    .requestMatchers("/", "/api/v1/login",
-                                    "/api/v1/auth/refresh", "/api/v1/register")
+                                    "/api/v1/auth/refresh", "/api/v1/register","/api/v1//payment/vnpay_return")
                    .permitAll()
                    //   bất cứ url khác phải đăng nhập mới được
                    .anyRequest()

@@ -212,6 +212,7 @@ public class AuthController {
 
     User newUser = this.userService.convertRegisterDtoToUser(RegisterDTO);
     User user = this.userService.handleSaveUser(newUser);
+
     CreateUserDTO resUserDTO = this.userService.convertUserToResUserDto(user);
     return ResponseEntity.ok(resUserDTO);
   }

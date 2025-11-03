@@ -61,7 +61,8 @@ public class TourController {
     // create folder if not exits
     this.fileService.createDirectory(basePath + folder);
     // store file
-    String uploadFile ="http://localhost:8080/storage/" + folder + "/" + this.fileService.store(file, folder);
+    String uploadFile = "http://localhost:8080/storage/" + folder + "/" +
+                        this.fileService.store(file, folder);
     UploadFileDTO uploadFileDTO = new UploadFileDTO(uploadFile, Instant.now());
     return ResponseEntity.ok().body(uploadFileDTO);
   }
@@ -94,7 +95,7 @@ public class TourController {
 
   @PutMapping("/{id}")
   @ApiMessage("cập nhật tour thành công.")
-  public ResponseEntity<Tour> updateTour(@PathVariable Long id,
+  public ResponseEntity<Tour> updateTour(@PathVariable("id") Long id,
                                          @RequestBody Tour tour)
       throws InvalidException {
     return ResponseEntity.ok(tourService.handleUpdate(id, tour));

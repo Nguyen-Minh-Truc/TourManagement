@@ -30,7 +30,6 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "id_role", nullable = false)
-    @NotNull(message = "Yêu cầu phải có role")
     private Role role;
 
 

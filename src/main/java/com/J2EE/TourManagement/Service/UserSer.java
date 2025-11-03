@@ -6,6 +6,7 @@ import com.J2EE.TourManagement.Model.DTO.RegisterDTO;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Model.DTO.UserDTO;
 import com.J2EE.TourManagement.Model.User;
+import com.J2EE.TourManagement.Repository.RoleRepository;
 import com.J2EE.TourManagement.Repository.UserRep;
 import java.util.List;
 import java.util.Optional;
@@ -17,14 +18,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserSer {
-  private static UserRep userRep;
-
-  public UserSer(UserRep userRep) { this.userRep = userRep; }
+  private final UserRep userRep;
+  private final RoleRepository roleRepository;
+  public UserSer(UserRep userRep, RoleRepository roleRepository) {
+    this.userRep = userRep;
+    this.roleRepository = roleRepository;
+  }
 
   public User handleSaveUser(User user) {
+    user.setRole(this.roleRepository.findByNameRole("user"));
     user.setStatus(true);
     return this.userRep.save(user);
   }
+
 
   public CreateUserDTO convertUserToResUserDto(User user) {
     CreateUserDTO resUserDTO = new CreateUserDTO();
@@ -74,8 +80,8 @@ public class UserSer {
             .map(item
                  -> new UserDTO(item.getId(), item.getFullname(),
                                 item.getEmail(), item.getStatus(),
-                                item.getRole(),
-                                item.getCreatedAt(), item.getUpdatedAt()))
+                                item.getRole(), item.getCreatedAt(),
+                                item.getUpdatedAt()))
             .collect(Collectors.toList());
 
     result.setResult(listUser);
@@ -126,15 +132,16 @@ public class UserSer {
                     : null;
 
     user.setStatus(false);
+    this.userRep.save(user);
     return user;
   }
 
-
-   public User convertRegisterDtoToUser(RegisterDTO registerDTO){
+  public User convertRegisterDtoToUser(RegisterDTO registerDTO) {
     User user = new User();
     user.setFullname(registerDTO.getFullname());
     user.setEmail(registerDTO.getEmail());
     user.setPassword(registerDTO.getPassword());
+    user.setRole(this.roleRepository.findByNameRole("user"));
     return user;
   }
 }
