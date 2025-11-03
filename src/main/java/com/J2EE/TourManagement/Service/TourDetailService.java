@@ -5,7 +5,9 @@ import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourDetailDTO;
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Model.TourDetail;
+import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
+import com.J2EE.TourManagement.Repository.TourPriceRepository;
 import com.J2EE.TourManagement.Repository.TourRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import com.turkraft.springfilter.boot.Filter;
@@ -25,6 +27,7 @@ public class TourDetailService {
   private final TourDetailMapper tourDetailMapper;
   private final TourRepository tourRepository;
   private final TourDetailRepository tourDetailRepository;
+  private final TourPriceRepository tourPriceRepository;
 
   public List<TourDetailDTO> handleGetAll(Long tourId) throws InvalidException {
 
@@ -47,6 +50,14 @@ public class TourDetailService {
       throw new InvalidException(
           "Không tìm thấy TourId để thêm (id = " + tourId + ")");
     }
+    // TourPrice
+    if (detail.getTourPrices() != null) {
+      for (TourPrice price : detail.getTourPrices()) {
+        price.setTourDetail(detail);
+      }
+    }
+
+    // 🔹 Chỉ cần lưu TourDetail, Hibernate sẽ tự cascade lưu TourPrice
     return tourDetailRepository.save(detail);
   }
 
