@@ -67,6 +67,22 @@ public class TourController {
     return ResponseEntity.ok().body(uploadFileDTO);
   }
 
+  @DeleteMapping("/file")
+  public ResponseEntity<String>
+  deleteFile(@RequestParam("url") String fileUrl) throws URISyntaxException {
+    try {
+      boolean deleted = fileService.deleteFileByUrl(fileUrl);
+      if (deleted) {
+        return ResponseEntity.ok("Xoá file thành công");
+      } else {
+        return ResponseEntity.status(404).body("File không tồn tại");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return ResponseEntity.status(400).body("Lỗi: " + e.getMessage());
+    }
+  }
+
   // Create
   @PostMapping
   @ApiMessage("thêm tour thành công.")
@@ -100,7 +116,6 @@ public class TourController {
       throws InvalidException {
     return ResponseEntity.ok(tourService.handleUpdate(id, tour));
   }
-
 
   @PatchMapping("/{id}/status")
   @ApiMessage("cập nhật tour thành công.")
