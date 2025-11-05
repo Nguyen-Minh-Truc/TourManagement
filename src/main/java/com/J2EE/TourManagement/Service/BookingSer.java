@@ -51,6 +51,8 @@ public class BookingSer {
     booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
+    booking.setContactFullname(bookingDTO.getContactFullname());
+    booking.setContactAddress(bookingDTO.getContactAddress());
 
     double totalPrice = 0;
     List<BookingDetail> details = new ArrayList<>();
@@ -100,6 +102,8 @@ public class BookingSer {
     booking.setStatus(bookingDTO.getStatus());
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
+    booking.setContactFullname(bookingDTO.getContactFullname());
+    booking.setContactAddress(bookingDTO.getContactAddress());
     booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
 
     booking.getBookingDetails().clear();

@@ -1,52 +1,73 @@
 package com.J2EE.TourManagement.Model.DTO;
 
-import java.util.List;
-
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 public class BookingDTO {
 
-    private long userId;
-    private String note;
+  private long userId;
+  private String note;
 
-    @Enumerated(EnumType.STRING)
-    private EnumStatusBooking status;
+  @Enumerated(EnumType.STRING) private EnumStatusBooking status;
 
-    @NotBlank(message = "Email người dùng không được để trống.")
-    private String contactEmail;
+  @NotBlank(message = "Email người dùng không được để trống.")
+  private String contactEmail;
 
-    @NotBlank(message = "Số điện thoại người dùng không được để trống.")
-    private String contactPhone;
+  @NotBlank(message = "Tên người dùng không được để trống.")
+  private String contactFullname;
 
-    @NotNull(message = "PaymentId không được để trống.")
-    private Long paymentId;
+  @NotBlank(message = "Địa chỉ người dùng không được để trống.")
+  private String contactAddress;
 
-    // ✅ Sửa kiểu dữ liệu thành BookingDetailDTO
-    private List<BookingDetailDTO> bookingDetails;
+  @NotBlank(message = "Số điện thoại người dùng không được để trống.")
+  private String contactPhone;
 
-    // --- Getters & Setters ---
-    public long getUserId() { return userId; }
-    public void setUserId(long userId) { this.userId = userId; }
+  @NotNull(message = "PaymentId không được để trống.") private Long paymentId;
 
-    public String getNote() { return note; }
-    public void setNote(String note) { this.note = note; }
+  // ✅ Sửa kiểu dữ liệu thành BookingDetailDTO
+  private List<BookingDetailDTO> bookingDetails;
 
-    public EnumStatusBooking getStatus() { return status; }
-    public void setStatus(EnumStatusBooking status) { this.status = status; }
+  // --- Getters & Setters ---
+  public long getUserId() { return userId; }
+  public void setUserId(long userId) { this.userId = userId; }
 
-    public String getContactEmail() { return contactEmail; }
-    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
+  public String getNote() { return note; }
+  public void setNote(String note) { this.note = note; }
 
-    public String getContactPhone() { return contactPhone; }
-    public void setContactPhone(String contactPhone) { this.contactPhone = contactPhone; }
+  public EnumStatusBooking getStatus() { return status; }
+  public void setStatus(EnumStatusBooking status) { this.status = status; }
 
-    public Long getPaymentId() { return paymentId; }
-    public void setPaymentId(Long paymentId) { this.paymentId = paymentId; }
+  public String getContactEmail() { return contactEmail; }
+  public void setContactEmail(String contactEmail) {
+    this.contactEmail = contactEmail;
+  }
 
-    public List<BookingDetailDTO> getBookingDetails() { return bookingDetails; }
-    public void setBookingDetails(List<BookingDetailDTO> bookingDetails) { this.bookingDetails = bookingDetails; }
+  public String getContactPhone() { return contactPhone; }
+  public void setContactPhone(String contactPhone) {
+    this.contactPhone = contactPhone;
+  }
+
+  public String getContactFullname() { return this.contactFullname; }
+
+  public void setContactFullname(String contactFullname) {
+    this.contactFullname = contactFullname;
+  }
+
+  public String getContactAddress() { return this.contactAddress; }
+
+  public void setContactAddress(String contactAddress) {
+    this.contactAddress = contactAddress;
+  }
+
+  public Long getPaymentId() { return paymentId; }
+  public void setPaymentId(Long paymentId) { this.paymentId = paymentId; }
+
+  public List<BookingDetailDTO> getBookingDetails() { return bookingDetails; }
+  public void setBookingDetails(List<BookingDetailDTO> bookingDetails) {
+    this.bookingDetails = bookingDetails;
+  }
 }

@@ -3,9 +3,7 @@ package com.J2EE.TourManagement.Model;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +30,7 @@ public class Booking {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_user", nullable = false)
-   @JsonBackReference("user-booking")
+  @JsonBackReference("user-booking")
   private User user;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "#,###.##")
@@ -44,6 +42,10 @@ public class Booking {
 
   private String contactEmail;
 
+  private String contactFullname;
+
+  private String contactAddress;
+
   private String contactPhone;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
@@ -53,7 +55,7 @@ public class Booking {
   private Instant updatedAt;
 
   @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
-   @JsonBackReference
+  @JsonBackReference
   private Payment payment;
 
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,
@@ -91,6 +93,18 @@ public class Booking {
 
   public void setContactPhone(String contactPhone) {
     this.contactPhone = contactPhone;
+  }
+
+  public String getContactFullname() { return this.contactFullname; }
+
+  public void setContactFullname(String contactFullname) {
+    this.contactFullname = contactFullname;
+  }
+
+  public String getContactAddress() { return this.contactAddress; }
+
+  public void setContactAddress(String contactAddress) {
+    this.contactAddress = contactAddress;
   }
 
   public Instant getCreatedAt() { return this.createdAt; }

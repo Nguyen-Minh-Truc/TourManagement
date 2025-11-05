@@ -111,7 +111,7 @@ public class TourController {
 
   @PutMapping("/{id}")
   @ApiMessage("cập nhật tour thành công.")
-  public ResponseEntity<Tour> updateTour(@PathVariable Long id,
+  public ResponseEntity<Tour> updateTour(@PathVariable("id") Long id,
                                          @RequestBody Tour tour)
       throws InvalidException {
     return ResponseEntity.ok(tourService.handleUpdate(id, tour));

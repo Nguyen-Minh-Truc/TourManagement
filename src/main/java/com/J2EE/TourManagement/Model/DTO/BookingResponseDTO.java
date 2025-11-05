@@ -1,114 +1,95 @@
 package com.J2EE.TourManagement.Model.DTO;
 
-import java.time.Instant;
-import java.util.List;
-
 import com.J2EE.TourManagement.Model.Booking;
 import com.J2EE.TourManagement.Model.BookingDetail;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
+import java.time.Instant;
+import java.util.List;
 
 public class BookingResponseDTO {
-    private long id;
-    private long userId;
-    private double totalPrice;
-    private String note;
-    private EnumStatusBooking status;
-    private String contactEmail;
-    private String contactPhone;
-    private Instant createdAt;
-    private Instant updatedAt;
-    private List<BookingDetail> bookingDetails;
+  private long id;
+  private long userId;
+  private double totalPrice;
+  private String note;
+  private EnumStatusBooking status;
+  private String contactEmail;
+  private String contactPhone;
+  private String contactFullname;
+  private String contactAddress;
+  private Instant createdAt;
+  private Instant updatedAt;
+  private List<BookingDetail> bookingDetails;
 
-    public BookingResponseDTO(Booking booking) {
-        this.id = booking.getId();
-        this.userId = booking.getUser().getId();
-        this.totalPrice = booking.getTotalPrice();
-        this.note = booking.getNote();
-        this.status = booking.getStatus();
-        this.contactEmail = booking.getContactEmail();
-        this.contactPhone = booking.getContactPhone();
-        this.createdAt = booking.getCreatedAt();
-        this.updatedAt = booking.getUpdatedAt();
-        this.bookingDetails = booking.getBookingDetails();
-    }
-    
-    public long getId() {
-        return this.id;
-    }
+  public BookingResponseDTO(Booking booking) {
+    this.id = booking.getId();
+    this.userId = booking.getUser().getId();
+    this.totalPrice = booking.getTotalPrice();
+    this.note = booking.getNote();
+    this.status = booking.getStatus();
+    this.contactEmail = booking.getContactEmail();
+    this.contactPhone = booking.getContactPhone();
+    this.contactAddress = booking.getContactAddress();
+    this.contactFullname = booking.getContactFullname();
+    this.createdAt = booking.getCreatedAt();
+    this.updatedAt = booking.getUpdatedAt();
+    this.bookingDetails = booking.getBookingDetails();
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public long getId() { return this.id; }
 
-    public long getUserId() {
-        return this.userId;
-    }
+  public void setId(long id) { this.id = id; }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+  public long getUserId() { return this.userId; }
 
-    public double getTotalPrice() {
-        return this.totalPrice;
-    }
+  public void setUserId(long userId) { this.userId = userId; }
 
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+  public double getTotalPrice() { return this.totalPrice; }
 
-    public String getNote() {
-        return this.note;
-    }
+  public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
 
-    public void setNote(String note) {
-        this.note = note;
-    }
+  public String getNote() { return this.note; }
 
-    public EnumStatusBooking getStatus() {
-        return this.status;
-    }
+  public void setNote(String note) { this.note = note; }
 
-    public void setStatus(EnumStatusBooking status) {
-        this.status = status;
-    }
+  public EnumStatusBooking getStatus() { return this.status; }
 
-    public String getContactEmail() {
-        return this.contactEmail;
-    }
+  public void setStatus(EnumStatusBooking status) { this.status = status; }
 
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
+  public String getContactEmail() { return this.contactEmail; }
 
-    public String getContactPhone() {
-        return this.contactPhone;
-    }
+  public void setContactEmail(String contactEmail) {
+    this.contactEmail = contactEmail;
+  }
 
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
-    }
+  public String getContactPhone() { return this.contactPhone; }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
-    }
+  public void setContactPhone(String contactPhone) {
+    this.contactPhone = contactPhone;
+  }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+  public String getContactFullname() { return this.contactFullname; }
 
-    public Instant getUpdatedAt() {
-        return this.updatedAt;
-    }
+  public void setContactFullname(String contactFullname) {
+    this.contactFullname = contactFullname;
+  }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+  public String getContactAddress() { return this.contactAddress; }
 
-    public List<BookingDetail> getBookingDetails() {
-        return this.bookingDetails;
-    }
+  public void setContactAddress(String contactAddress) {
+    this.contactAddress = contactAddress;
+  }
 
-    public void setBookingDetails(List<BookingDetail> bookingDetails) {
-        this.bookingDetails = bookingDetails;
-    }
+  public Instant getCreatedAt() { return this.createdAt; }
+
+  public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+  public Instant getUpdatedAt() { return this.updatedAt; }
+
+  public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+
+  public List<BookingDetail> getBookingDetails() { return this.bookingDetails; }
+
+  public void setBookingDetails(List<BookingDetail> bookingDetails) {
+    this.bookingDetails = bookingDetails;
+  }
 }
