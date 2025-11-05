@@ -144,6 +144,13 @@ public class BookingSer {
     return new BookingResponseDTO(booking);
   }
 
+
+   public Booking getById(long id) {
+    Booking booking = bookingRep.findById(id).orElseThrow(
+        () -> new RuntimeException("Booking không tồn tại"));
+    return booking;
+  }
+
   public ResultPaginationDTO getAllBooking(Specification<Booking> spec,
                                            Pageable pageable) {
     Page<Booking> pageUser = bookingRep.findAll(spec, pageable);

@@ -21,7 +21,6 @@ public class Payment {
    @JsonManagedReference
   private Booking booking;
 
-  @ManyToOne @JoinColumn(name = "provider_id") private PaymentProvider provider;
 
   private double amount;
   private String method;
@@ -41,12 +40,6 @@ public class Payment {
   public Booking getBooking() { return this.booking; }
 
   public void setBooking(Booking booking) { this.booking = booking; }
-
-  public PaymentProvider getProvider() { return this.provider; }
-
-  public void setProvider(PaymentProvider provider) {
-    this.provider = provider;
-  }
 
   public double getAmount() { return this.amount; }
 
