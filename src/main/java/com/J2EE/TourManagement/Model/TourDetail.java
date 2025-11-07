@@ -28,13 +28,15 @@ public class TourDetail {
     @JsonBackReference
     private Tour tour;
 
+    @Column(name = "startLocation")
     @NotBlank(message = "Điểm khởi hành không được để trống")
     private String startLocation;
 
-
+    @Column(name = "startDay")
     @NotNull(message = "Ngày bắt đầu không được để trống")
     private LocalDate startDay;
 
+    @Column(name = "endDay")
     @NotNull(message = "Ngày kết thúc không được để trống")
     @FutureOrPresent(message = "Ngày kết thúc phải là hiện tại hoặc trong tương lai")
     private LocalDate endDay;
@@ -44,9 +46,10 @@ public class TourDetail {
 
     private String status;
 
-    @Column(updatable = false)
+    @Column(updatable = false, name = "createdAt")
     private LocalDateTime createdAt;
 
+    @Column(name = "updateAt")
     private LocalDateTime updateAt;
 
     @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

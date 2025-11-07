@@ -38,5 +38,4 @@ public class TourDetailController {
     public ResponseEntity<TourDetail> update(@PathVariable Long id, @Valid @RequestBody TourDetail detail) throws InvalidException {
         return ResponseEntity.ok(tourDetailService.handleUpdate(id, detail));
     }
-
 }

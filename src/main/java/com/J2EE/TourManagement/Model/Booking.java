@@ -53,7 +53,7 @@ public class Booking {
   private Instant updatedAt;
 
   @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
-   @JsonBackReference
+  @JsonBackReference
   private Payment payment;
 
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,

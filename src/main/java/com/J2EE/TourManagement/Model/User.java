@@ -6,31 +6,32 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-
 public class User {
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
+  @Column(name = "fullname")
   @NotBlank(message = "Tên người dùng không được để trống.")
   private String fullname;
+    @Column(name = "email", unique = true)
   @NotBlank(message = "Email người dùng không được để trống.")
   private String email;
   @NotBlank(message = "Mật khẩu người dùng không được để trống.")
   private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "id_role", nullable = false)
+    private Role role;
+
 
   private boolean status;
 
@@ -46,13 +47,13 @@ public class User {
   @JsonManagedReference("user-booking")
   private List<Booking> bookings;
 
-  public long getId() { return this.id; }
+    public long getId() { return this.id; }
 
   public void setId(long id) { this.id = id; }
 
   public String getFullname() { return this.fullname; }
 
-  public void setFullname(String fullName) { this.fullname = fullName; }
+  public void setFullname(String fullname) { this.fullname = fullname; }
 
   public String getEmail() { return this.email; }
 
@@ -61,6 +62,7 @@ public class User {
   public String getPassword() { return this.password; }
 
   public void setPassword(String password) { this.password = password; }
+
 
   public boolean isStatus() { return this.status; }
 
@@ -95,4 +97,11 @@ public class User {
   public void handleBeforeUpdate() {
     this.updatedAt = Instant.now();
   }
+
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

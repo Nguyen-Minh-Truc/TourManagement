@@ -1,6 +1,8 @@
 package com.J2EE.TourManagement.Model.DTO;
 
 
+import com.J2EE.TourManagement.Model.Role;
+
 public class ResLoginDTO {
   private String accessToken;
   private UserLogin userLogin;
@@ -9,11 +11,13 @@ public class ResLoginDTO {
     private long id;
     private String email;
     private String fullname;
+    private RoleDTO role;
 
-    public UserLogin(long id, String email, String fullname) {
+    public UserLogin(long id, String email, String fullname, RoleDTO role) {
       this.id = id;
       this.email = email;
       this.fullname = fullname;
+        this.role = role;
     }
 
     public UserLogin() {}
@@ -29,6 +33,9 @@ public class ResLoginDTO {
     public String getEmail() { return this.email; }
 
     public void setEmail(String email) { this.email = email; }
+
+      public RoleDTO getRole() { return role; }
+      public void setRole(RoleDTO role) { this.role = role; }
   }
 
   public String getAccessToken() { return this.accessToken; }
