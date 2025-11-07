@@ -2,7 +2,9 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
+import com.J2EE.TourManagement.Model.DTO.Tour.TourCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourDTO;
+import com.J2EE.TourManagement.Model.DTO.Tour.TourUpdateDTO;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
-
 @RequiredArgsConstructor
 @Service
 public class TourService {
@@ -26,7 +24,9 @@ public class TourService {
 
     //Create
     @Transactional
-    public Tour handleSave(Tour tour) {
+    public Tour handleSave(TourCreateDTO dto) {
+        Tour tour = tourMapper.toEntity(dto);
+
         return tourRepository.save(tour);
     }
 
@@ -42,16 +42,14 @@ public class TourService {
 
     //Update
     @Transactional
-    public Tour handleUpdate(Long id, Tour updatedTour)  throws InvalidException {
-        if (!tourRepository.existsById(id))
-        {
-            throw new InvalidException("Không tìm thấy Tour để cập nhật (id = " + id + ")");
-        }
-        return this.tourRepository.findById(id).
-                map(tour -> {
-                    BeanUtils.copyProperties(updatedTour, tour, "id", "createdAt", "tourDetails");
-                    return this.tourRepository.save(tour);
-                }).get();
+    public Tour handleUpdate(Long id, TourUpdateDTO dto)  throws InvalidException {
+        Tour existingTour = tourRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Không tìm thấy Tour để cập nhật (id = " + id + ")"));
+
+        // Map dữ liệu từ DTO sang entity có sẵn
+        tourMapper.updateEntityFromDto(dto, existingTour);
+
+        return tourRepository.save(existingTour);
     }
 
     //get by id
@@ -60,16 +58,6 @@ public class TourService {
         Tour tour = this.tourRepository.findById(id).isPresent() ? this.tourRepository.findById(id).get() : null;
         return tour;
 
-    }
-
-
-
-    //xoa
-    public void  handleDelete(Long id) {
-        if (!this.tourRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy tour để xóa (id = " + id + ")");
-        }
-        this.tourRepository.deleteById(id);
     }
 
     public boolean checkIdExists(long id){

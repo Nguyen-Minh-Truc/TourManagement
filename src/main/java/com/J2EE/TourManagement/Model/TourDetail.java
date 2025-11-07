@@ -49,9 +49,19 @@ public class TourDetail {
 
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true,  fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference(value = "detail-price")
     private List<TourPrice> tourPrices;
+
+    // Quan hệ 1 TourDetail có nhiều Review
+    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "detail-review")
+    private List<Review> reviews;
+
+    // Quan hệ 1 TourDetail có 1 Itinerary
+    @OneToOne(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "detail-itinerary")
+    private TourItinerary itinerary;
 
     @PrePersist
     protected void onCreate() {

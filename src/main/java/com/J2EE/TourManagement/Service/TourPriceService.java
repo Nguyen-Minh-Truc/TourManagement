@@ -1,7 +1,7 @@
 package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourPriceMapper;
-import com.J2EE.TourManagement.Model.DTO.Tour.TourPriceDTO;
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;

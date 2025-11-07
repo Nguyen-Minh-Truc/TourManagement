@@ -1,16 +1,11 @@
 package com.J2EE.TourManagement.Controller;
 
-import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
-import com.J2EE.TourManagement.Model.DTO.Tour.TourDetailDTO;
+import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Service.TourDetailService;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
-import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 

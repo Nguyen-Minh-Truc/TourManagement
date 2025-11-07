@@ -1,9 +1,6 @@
-package com.J2EE.TourManagement.Model.DTO.Tour;
+package com.J2EE.TourManagement.Model.DTO.TourPrice;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 

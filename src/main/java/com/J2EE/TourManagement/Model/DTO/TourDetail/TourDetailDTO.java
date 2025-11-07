@@ -1,9 +1,17 @@
-package com.J2EE.TourManagement.Model.DTO.Tour;
+package com.J2EE.TourManagement.Model.DTO.TourDetail;
+
+import com.J2EE.TourManagement.Model.DTO.Review.ReviewResponseDTO;
+import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryResponseDTO;
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceDTO;
+import com.J2EE.TourManagement.Model.TourItinerary;
+import com.J2EE.TourManagement.Repository.ReviewRepository;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
 public class TourDetailDTO {
     private Long id;
     private String startLocation;
@@ -15,6 +23,8 @@ public class TourDetailDTO {
     private LocalDateTime updateAt;
 
     private List<TourPriceDTO> tourPrices;
+    private List<ReviewResponseDTO> reviews;
+    private TourItineraryResponseDTO tourItinerary;
 
     public TourDetailDTO(Long id, String startLocation, LocalDate startDay, LocalDate endDay, String status, LocalDateTime createdAt, LocalDateTime updateAt, List<TourPriceDTO> tourPrices) {
         this.id = id;

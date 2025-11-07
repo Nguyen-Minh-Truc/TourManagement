@@ -1,4 +1,4 @@
-package com.J2EE.TourManagement.Model.DTO.Tour;
+package com.J2EE.TourManagement.Model.DTO.Review;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class TourItineraryDTO {
+public class TourItineraryResponseDTO {
 
     private Long id;
     private Long tourDetailId;

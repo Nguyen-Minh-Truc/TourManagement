@@ -3,20 +3,20 @@ package com.J2EE.TourManagement.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
-@Getter
-@Setter
 @Table(name = "tours")
 public class Tour {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,9 +32,8 @@ public class Tour {
 
     private String longDesc;
 
-    @NotNull(message = "Vui lòng nhập số ngày tour")
-    @Positive(message = "Thời lượng tour phải lớn hơn 0")
-    private Integer durationDay;
+    @Pattern(regexp = "^\\d+ ngày \\d+ đêm$", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
+    private String duration;
 
     @NotNull(message = "Vui lòng nhập sức chứa")
     @Positive(message = "Sức chứa phải lớn hơn 0")
@@ -42,15 +41,15 @@ public class Tour {
 
     @NotBlank(message = "Điểm đến không được để trống")
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
-    private String destination;
+    private String location;
 
     @NotBlank(message = "Trạng thái không được để trống")
     @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
     private String status;
 
-
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     private String createdBy;
@@ -63,7 +62,9 @@ public class Tour {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.status = (this.status == null) ? "DRAFT" : this.status;
+        if (this.status == null) {
+            this.status = "DRAFT";
+        }
     }
 
     @PreUpdate

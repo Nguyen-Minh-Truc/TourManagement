@@ -1,8 +1,6 @@
 package com.J2EE.TourManagement.Controller;
 
-import com.J2EE.TourManagement.Model.DTO.Tour.TourDetailDTO;
-import com.J2EE.TourManagement.Model.DTO.Tour.TourPriceDTO;
-import com.J2EE.TourManagement.Model.TourDetail;
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceDTO;
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Service.TourPriceService;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;

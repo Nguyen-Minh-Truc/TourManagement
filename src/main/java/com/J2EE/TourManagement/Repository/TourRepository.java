@@ -10,7 +10,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificationExecutor {
-    Page<Tour> findByStatusContainingIgnoreCaseAndDestinationContainingIgnoreCase(
-            String status, String destination, Pageable pageable
-    );
 }

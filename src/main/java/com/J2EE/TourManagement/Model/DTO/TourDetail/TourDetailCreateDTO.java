@@ -1,5 +1,6 @@
-package com.J2EE.TourManagement.Model.DTO.Tour;
+package com.J2EE.TourManagement.Model.DTO.TourDetail;
 
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceCreateDTO;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;

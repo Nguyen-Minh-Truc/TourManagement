@@ -1,9 +1,14 @@
 package com.J2EE.TourManagement.Model.DTO.Tour;
 
+import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailCreateDTO;
+import com.J2EE.TourManagement.Model.TourDetail;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Data
 @Getter
@@ -32,5 +37,10 @@ public class TourCreateDTO {
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
     private String location;
 
-    private String status; // tùy chọn, nếu không nhập thì entity sẽ set DRAFT
+    @NotBlank(message = "Trạng thái không được để trống")
+    @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
+    private String status;
+
+    @Valid
+    private List<TourDetail> tourDetails;
 }
