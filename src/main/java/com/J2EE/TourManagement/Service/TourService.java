@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
+import com.J2EE.TourManagement.Model.DTO.Tour.TourCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourUpdateDTO;
 import com.J2EE.TourManagement.Util.error.InvalidException;
