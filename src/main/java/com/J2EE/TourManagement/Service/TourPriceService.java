@@ -1,7 +1,9 @@
 package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourPriceMapper;
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceDTO;
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceUpdateDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
@@ -23,8 +25,16 @@ public class TourPriceService {
     private final TourPriceMapper tourPriceMapper;
 
     //Create
-    public TourPrice handleSave(TourPrice price) {
-        return tourPriceRepository.save(price);
+    public TourPrice handleSave(TourPriceCreateDTO dto)
+            throws InvalidException {
+        if (!tourPriceRepository.existsById(dto.getTourDetailId())) {
+            throw new InvalidException(
+                    "Không tìm thấy TourDetail Id để thêm (id = " + dto.getTourDetailId() + ")");
+        }
+
+        TourPrice reponse = tourPriceMapper.toEntity(dto);
+
+        return tourPriceRepository.save(reponse);
     }
 
     //Read by TourPrice id
@@ -41,20 +51,18 @@ public class TourPriceService {
     }
 
     //Update
-    public TourPrice handleUpdate(Long id, TourPrice updated) throws InvalidException {
-        if (!tourPriceRepository.existsById(id))
-        {
-            throw new InvalidException("Không tìm thấy TourPrice ID = " + id);
-        }
+    public TourPrice handleUpdate(Long id, TourPriceUpdateDTO dto)
+            throws InvalidException {
+        TourPrice existing = tourPriceRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Không tìm thấy TourPrice Id để cập nhật (id = " + id + ")"));
 
-        return tourPriceRepository.findById(id)
-                .map(existing -> {
-                    BeanUtils.copyProperties(updated, existing, "id");
-                    return tourPriceRepository.save(existing);
-                }).get();
+        // Map dữ liệu từ DTO sang entity có sẵn
+        tourPriceMapper.updateEntityFromDto(dto, existing);
+
+        return tourPriceRepository.save(existing);
     }
 
-    public TourPrice getTourPriceById(long id){
+    public TourPrice getTourPriceById(long id) {
         TourPrice tourPrice = this.tourPriceRepository.findById(id).isPresent() ? this.tourPriceRepository.findById(id).get() : null;
         return tourPrice;
     }

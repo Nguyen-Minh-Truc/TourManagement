@@ -1,9 +1,6 @@
 package com.J2EE.TourManagement.Model.DTO.Tour;
 
-import com.J2EE.TourManagement.Model.DTO.Review.ReviewResponseDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
-import com.J2EE.TourManagement.Model.Review;
-import com.J2EE.TourManagement.Model.TourItinerary;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

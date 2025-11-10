@@ -76,7 +76,7 @@ public class TourController {
 
 
     //Create
-    @PostMapping(consumes = {"application/json", "application/json;charset=UTF-8"})
+    @PostMapping
     @ApiMessage("Thêm tour thành công.")
     public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody TourCreateDTO tourCreateDTO) {
         Tour tour = tourService.handleSave(tourCreateDTO);
@@ -105,9 +105,10 @@ public class TourController {
     //Update
     @PutMapping("/{id}")
     @ApiMessage("cập nhật tour thành công.")
-    public ResponseEntity<TourDTO> updateTour(@PathVariable Long id, @RequestBody TourUpdateDTO tourUpdateDTO)
+    public ResponseEntity<TourDTO> updateTour(@PathVariable Long id, @Valid @RequestBody TourUpdateDTO dto)
             throws InvalidException {
-        Tour updated = tourService.handleUpdate(id, tourUpdateDTO);
-        return ResponseEntity.ok(tourMapper.toDTO(updated));
+        Tour reponse = tourService.handleUpdate(id, dto);
+
+        return ResponseEntity.ok(tourMapper.toDTO(reponse));
     }
 }

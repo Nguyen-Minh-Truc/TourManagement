@@ -3,7 +3,7 @@ package com.J2EE.TourManagement.Controller;
 import com.J2EE.TourManagement.Mapper.TourItineraryMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryCreateDTO;
-import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryResponseDTO;
+import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryDTO;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryUpdateDTO;
 import com.J2EE.TourManagement.Model.TourItinerary;
 import com.J2EE.TourManagement.Service.TourItineraryService;
@@ -11,12 +11,10 @@ import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +32,7 @@ public class TourItineraryController {
     //Create
     @PostMapping("/itinerary")
     @ApiMessage("Thêm lộ trình tour thành công!")
-    public ResponseEntity<TourItineraryResponseDTO> postNewTourItinerary(@Valid @RequestBody TourItineraryCreateDTO dto) throws InvalidException {
+    public ResponseEntity<TourItineraryDTO> postNewTourItinerary(@Valid @RequestBody TourItineraryCreateDTO dto) throws InvalidException {
         TourItinerary response = tourItineraryService.handleSave(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(tourItineraryMapper.toResponseDTO(response));
@@ -49,7 +47,7 @@ public class TourItineraryController {
     //Update
     @PutMapping("/itinerary/{id}")
     @ApiMessage("Cập nhật lộ trình tour thành công.")
-    public ResponseEntity<TourItineraryResponseDTO> updateItinerary(@PathVariable Long id, @RequestBody TourItineraryUpdateDTO itineraryUpdateDTO) throws InvalidException {
+    public ResponseEntity<TourItineraryDTO> updateItinerary(@PathVariable Long id, @RequestBody TourItineraryUpdateDTO itineraryUpdateDTO) throws InvalidException {
         TourItinerary updated = tourItineraryService.handleUpdate(id, itineraryUpdateDTO);
         return ResponseEntity.ok(tourItineraryMapper.toResponseDTO(updated));
     }

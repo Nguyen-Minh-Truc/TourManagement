@@ -1,17 +1,17 @@
-package com.J2EE.TourManagement.Model.DTO.Review;
+package com.J2EE.TourManagement.Model.DTO.TourItinerary;
+
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class ReviewResponseDTO {
+public class TourItineraryDTO {
 
     private Long id;
     private Long tourDetailId;
-    private String reviewerName;
+    private String title;
     private String content;
-    private Integer rating;
-    private String imageUrl;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

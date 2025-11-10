@@ -1,6 +1,9 @@
 package com.J2EE.TourManagement.Controller;
 
+import com.J2EE.TourManagement.Mapper.TourDetailMapper;
+import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
+import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailUpdateDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Service.TourDetailService;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
@@ -16,9 +19,11 @@ import java.util.List;
 public class TourDetailController {
 
     private final TourDetailService tourDetailService;
+    private final TourDetailMapper tourDetailMapper;
 
-    public TourDetailController(TourDetailService tourDetailService) {
+    public TourDetailController(TourDetailService tourDetailService, TourDetailMapper tourDetailMapper) {
         this.tourDetailService = tourDetailService;
+        this.tourDetailMapper = tourDetailMapper;
     }
 
     //Read by tour id
@@ -27,15 +32,21 @@ public class TourDetailController {
         return ResponseEntity.ok(tourDetailService.handleGetAll(tourId));
     }
 
+    //Create
     @ApiMessage("Thêm tour detail thành công!")
     @PostMapping("/details")
-    public ResponseEntity<TourDetail> create(@Valid @RequestBody TourDetail detail) throws InvalidException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(tourDetailService.handleSave(detail));
+    public ResponseEntity<TourDetailDTO> create(@Valid @RequestBody TourDetailCreateDTO dto)
+            throws InvalidException {
+        TourDetail detail = tourDetailService.handleSave(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tourDetailMapper.toDTO(detail));
     }
 
+    //Update
     @ApiMessage("Sửa tour detail thành công!")
     @PutMapping("/details/{id}")
-    public ResponseEntity<TourDetail> update(@PathVariable Long id, @Valid @RequestBody TourDetail detail) throws InvalidException {
-        return ResponseEntity.ok(tourDetailService.handleUpdate(id, detail));
+    public ResponseEntity<TourDetailDTO> update(@PathVariable Long id, @Valid @RequestBody TourDetailUpdateDTO dto)
+            throws InvalidException {
+        TourDetail reponse = tourDetailService.handleUpdate(id, dto);
+        return ResponseEntity.ok(tourDetailMapper.toDTO(reponse));
     }
 }

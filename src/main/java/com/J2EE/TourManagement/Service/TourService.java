@@ -45,7 +45,6 @@ public class TourService {
     }
 
     //Update
-    @Transactional
     public Tour handleUpdate(Long id, TourUpdateDTO dto)  throws InvalidException {
         Tour existingTour = tourRepository.findById(id)
                 .orElseThrow(() -> new InvalidException("Không tìm thấy Tour để cập nhật (id = " + id + ")"));
