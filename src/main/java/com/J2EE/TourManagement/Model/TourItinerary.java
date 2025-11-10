@@ -22,7 +22,7 @@ public class TourItinerary {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_detail_id")
-    @JsonBackReference
+    @JsonBackReference(value = "detail-itinerary")
     private TourDetail tourDetail;
 
     @NotBlank(message = "Tiêu đề lịch trình không được để trống")
