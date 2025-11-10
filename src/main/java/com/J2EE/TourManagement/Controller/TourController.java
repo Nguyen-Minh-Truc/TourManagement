@@ -76,7 +76,7 @@ public class TourController {
 
 
     //Create
-    @PostMapping(consumes = {"application/json", "application/json;charset=UTF-8"})
+    @PostMapping
     @ApiMessage("Thêm tour thành công.")
     public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody TourCreateDTO tourCreateDTO) {
         Tour tour = tourService.handleSave(tourCreateDTO);
