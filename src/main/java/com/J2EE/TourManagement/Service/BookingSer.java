@@ -48,7 +48,6 @@ public class BookingSer {
     booking.setUser(userSer.getUserById(bookingDTO.getUserId()));
     booking.setNote(bookingDTO.getNote());
     booking.setStatus(bookingDTO.getStatus());
-    booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
     booking.setContactFullname(bookingDTO.getContactFullname());
@@ -104,7 +103,6 @@ public class BookingSer {
     booking.setContactPhone(bookingDTO.getContactPhone());
     booking.setContactFullname(bookingDTO.getContactFullname());
     booking.setContactAddress(bookingDTO.getContactAddress());
-    booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
 
     booking.getBookingDetails().clear();
 

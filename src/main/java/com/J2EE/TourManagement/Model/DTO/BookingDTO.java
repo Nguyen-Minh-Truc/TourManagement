@@ -26,7 +26,7 @@ public class BookingDTO {
   @NotBlank(message = "Số điện thoại người dùng không được để trống.")
   private String contactPhone;
 
-  @NotNull(message = "PaymentId không được để trống.") private Long paymentId;
+ private Long paymentId;
 
   // ✅ Sửa kiểu dữ liệu thành BookingDetailDTO
   private List<BookingDetailDTO> bookingDetails;
