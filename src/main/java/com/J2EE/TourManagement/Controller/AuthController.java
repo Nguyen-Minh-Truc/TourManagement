@@ -1,13 +1,16 @@
 package com.J2EE.TourManagement.Controller;
 
 import com.J2EE.TourManagement.Model.DTO.*;
+import com.J2EE.TourManagement.Model.RestResponse;
 import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Service.UserSer;
 import com.J2EE.TourManagement.Util.SecurityUtil;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -26,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-
 
 @RestController
 @RequestMapping("/api/v1")
@@ -65,14 +66,13 @@ public class AuthController {
     SecurityContextHolder.getContext().setAuthentication(authentication);
     ResLoginDTO resLoginDTO = new ResLoginDTO();
     User currentUser = this.userService.getUserByName(loginDTO.getUsername());
-      RoleDTO roleDTO = new RoleDTO(
-              currentUser.getRole().getId(),
-              currentUser.getRole().getNameRole(),
-                currentUser.getRole().getDescription(),
-                currentUser.getRole().isStatus()
-      );
-    ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname(), roleDTO);
+    RoleDTO roleDTO = new RoleDTO(currentUser.getRole().getId(),
+                                  currentUser.getRole().getNameRole(),
+                                  currentUser.getRole().getDescription(),
+                                  currentUser.getRole().isStatus());
+    ResLoginDTO.UserLogin userLogin =
+        new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
+                                  currentUser.getFullname(), roleDTO);
 
     String access_token = this.securityUtil.createAccessToken(
         authentication.getName(), userLogin);
@@ -103,20 +103,32 @@ public class AuthController {
 
   @GetMapping("/auth/account")
   @ApiMessage("fetch Account")
-  public ResponseEntity<?> getAccount() {
-    String email = this.securityUtil.getCurrentUserLogin().isPresent()
-                       ? this.securityUtil.getCurrentUserLogin().get()
-                       : "";
+  public ResponseEntity<?> getAccount() throws InvalidException {
+    Optional<String> currentLogin = this.securityUtil.getCurrentUserLogin();
 
+    if (currentLogin.isEmpty()) {
+      throw new InvalidException(
+          "Người dùng chưa đăng nhập hoặc token không hợp lệ.");
+    }
+
+    String email = currentLogin.get();
     User currentUser = this.userService.getUserByName(email);
-    RoleDTO roleDTO = new RoleDTO(
-            currentUser.getRole().getId(),
-            currentUser.getRole().getNameRole(),
-            currentUser.getRole().getDescription(),
-            currentUser.getRole().isStatus()
-    );
-    ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname(), roleDTO);
+
+    if (currentUser == null) {
+      throw new InvalidException(
+          "Không tìm thấy thông tin người dùng với email: " + email);
+    }
+
+    if (currentUser.getRole() == null) {
+      throw new InvalidException("Người dùng chưa được gán quyền (role).");
+    }
+    RoleDTO roleDTO = new RoleDTO(currentUser.getRole().getId(),
+                                  currentUser.getRole().getNameRole(),
+                                  currentUser.getRole().getDescription(),
+                                  currentUser.getRole().isStatus());
+    ResLoginDTO.UserLogin userLogin =
+        new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
+                                  currentUser.getFullname(), roleDTO);
     return ResponseEntity.ok().body(userLogin);
   }
 
@@ -133,14 +145,13 @@ public class AuthController {
 
     ResLoginDTO resLoginDTO = new ResLoginDTO();
     User currentUser = this.userService.getUserByName(email);
-    RoleDTO roleDTO = new RoleDTO(
-            currentUser.getRole().getId(),
-            currentUser.getRole().getNameRole(),
-            currentUser.getRole().getDescription(),
-            currentUser.getRole().isStatus()
-    );
-    ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-        currentUser.getId(), currentUser.getEmail(), currentUser.getFullname(), roleDTO);
+    RoleDTO roleDTO = new RoleDTO(currentUser.getRole().getId(),
+                                  currentUser.getRole().getNameRole(),
+                                  currentUser.getRole().getDescription(),
+                                  currentUser.getRole().isStatus());
+    ResLoginDTO.UserLogin userLogin =
+        new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
+                                  currentUser.getFullname(), roleDTO);
 
     String access_token = this.securityUtil.createAccessToken(email, userLogin);
     resLoginDTO.setAccessToken(access_token);
@@ -177,7 +188,7 @@ public class AuthController {
       throw new InvalidException("Access Token không hợp lệ. ");
     }
 
-    this.userService.UpdateRefreshToken("null", email);
+    this.userService.UpdateRefreshToken(null, email);
 
     ResponseCookie responseCookie = ResponseCookie.from("refresh_Token", null)
                                         .httpOnly(true)
@@ -186,9 +197,15 @@ public class AuthController {
                                         .maxAge(0)
                                         .build();
 
+    RestResponse<Object> body = new RestResponse<>();
+    body.setStatusCode(200);
+    body.setError(null);
+    body.setMessage("Đăng xuất thành công");
+    body.setData(null);
+
     return ResponseEntity.ok()
         .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-        .body("Đăng xuất thành Công.");
+        .body(body);
   }
 
   @PostMapping("/auth/register")
@@ -216,5 +233,4 @@ public class AuthController {
     CreateUserDTO resUserDTO = this.userService.convertUserToResUserDto(user);
     return ResponseEntity.ok(resUserDTO);
   }
-
 }

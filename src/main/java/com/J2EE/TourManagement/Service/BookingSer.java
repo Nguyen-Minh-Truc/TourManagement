@@ -48,9 +48,10 @@ public class BookingSer {
     booking.setUser(userSer.getUserById(bookingDTO.getUserId()));
     booking.setNote(bookingDTO.getNote());
     booking.setStatus(bookingDTO.getStatus());
-    booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
+    booking.setContactFullname(bookingDTO.getContactFullname());
+    booking.setContactAddress(bookingDTO.getContactAddress());
 
     double totalPrice = 0;
     List<BookingDetail> details = new ArrayList<>();
@@ -100,7 +101,8 @@ public class BookingSer {
     booking.setStatus(bookingDTO.getStatus());
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
-    booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
+    booking.setContactFullname(bookingDTO.getContactFullname());
+    booking.setContactAddress(bookingDTO.getContactAddress());
 
     booking.getBookingDetails().clear();
 
