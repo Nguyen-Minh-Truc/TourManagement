@@ -13,13 +13,11 @@ import com.J2EE.TourManagement.Util.error.InvalidException;
 import com.J2EE.TourManagement.Util.error.StorageException;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,48 +29,64 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/tours")
 public class TourController {
-    private final TourService tourService;
-    private final TourMapper tourMapper;
-    private final FileService fileService;
+  private final TourService tourService;
+  private final TourMapper tourMapper;
+  private final FileService fileService;
 
-    @Value("${mt.upload-file.base-uri}")
-    private String basePath;
+  @Value("${mt.upload-file.base-uri}") private String basePath;
 
-    public TourController(TourService tourService, FileService fileService, TourMapper tourMapper) {
-        this.tourService = tourService;
-        this.fileService = fileService;
-        this.tourMapper = tourMapper;
+  public TourController(TourService tourService, FileService fileService,
+                        TourMapper tourMapper) {
+    this.tourService = tourService;
+    this.fileService = fileService;
+    this.tourMapper = tourMapper;
+  }
+
+  @PostMapping("/file")
+  @ApiMessage("uploadFile")
+  public ResponseEntity<UploadFileDTO>
+  postMethodName(@RequestParam(name = "file", required = false)
+                 MultipartFile file, @RequestParam("folder") String folder)
+      throws URISyntaxException, IOException, StorageException {
+    // valid
+    if (file == null || file.isEmpty()) {
+      throw new StorageException("file is empty.");
     }
+    String fileName = file.getOriginalFilename();
+    List<String> allowedExtensions =
+        Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
 
-    @PostMapping("/file")
-    @ApiMessage("uploadFile")
-    public ResponseEntity<UploadFileDTO>
-    postMethodName(@RequestParam(name = "file", required = false)
-                   MultipartFile file, @RequestParam("folder") String folder)
-            throws URISyntaxException, IOException, StorageException {
-        // valid
-        if (file == null || file.isEmpty()) {
-            throw new StorageException("file is empty.");
-        }
-        String fileName = file.getOriginalFilename();
-        List<String> allowedExtensions =
-                Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
+    boolean idValid = allowedExtensions.stream().anyMatch(
+        item -> fileName.toLowerCase().endsWith(item));
 
-        boolean idValid = allowedExtensions.stream().anyMatch(
-                item -> fileName.toLowerCase().endsWith(item));
-
-        if (!idValid) {
-            throw new StorageException("file không hợp lệ. chỉ những file: " +
-                    allowedExtensions.toString());
-        }
-        // create folder if not exits
-        this.fileService.createDirectory(basePath + folder);
-        // store file
-        String uploadFile = "http://localhost:8080/storage/" + folder + "/" + this.fileService.store(file, folder);
-        UploadFileDTO uploadFileDTO = new UploadFileDTO(uploadFile, Instant.now());
-        return ResponseEntity.ok().body(uploadFileDTO);
+    if (!idValid) {
+      throw new StorageException("file không hợp lệ. chỉ những file: " +
+                                 allowedExtensions.toString());
     }
+    // create folder if not exits
+    this.fileService.createDirectory(basePath + folder);
+    // store file
+    String uploadFile = "http://localhost:8080/storage/" + folder + "/" +
+                        this.fileService.store(file, folder);
+    UploadFileDTO uploadFileDTO = new UploadFileDTO(uploadFile, Instant.now());
+    return ResponseEntity.ok().body(uploadFileDTO);
+  }
 
+  @DeleteMapping("/file")
+  public ResponseEntity<String> deleteFile(@RequestParam("url") String fileUrl)
+      throws URISyntaxException {
+    try {
+      boolean deleted = fileService.deleteFileByUrl(fileUrl);
+      if (deleted) {
+        return ResponseEntity.ok("Xoá file thành công");
+      } else {
+        return ResponseEntity.status(404).body("File không tồn tại");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return ResponseEntity.status(400).body("Lỗi: " + e.getMessage());
+    }
+  }
 
     //Create
     @PostMapping
@@ -82,12 +96,12 @@ public class TourController {
         return ResponseEntity.status(HttpStatus.CREATED).body(tourMapper.toDTO(reponse));
     }
 
-    // Read all
-    @GetMapping
-    public ResponseEntity<ResultPaginationDTO>
-    fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
-        return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
-    }
+  // Read all
+  @GetMapping
+  public ResponseEntity<ResultPaginationDTO>
+  fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
+    return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
+  }
 
     //Read by id
     @GetMapping("/{id}")
@@ -99,13 +113,14 @@ public class TourController {
         return ResponseEntity.ok(tourMapper.toDTO(reponse));
     }
 
-    //Update
-    @PutMapping("/{id}")
-    @ApiMessage("cập nhật tour thành công.")
-    public ResponseEntity<TourDTO> updateTour(@PathVariable Long id, @Valid @RequestBody TourUpdateDTO dto)
-            throws InvalidException {
-        Tour reponse = tourService.handleUpdate(id, dto);
+  // Update
+  @PutMapping("/{id}")
+  @ApiMessage("cập nhật tour thành công.")
+  public ResponseEntity<TourDTO>
+  updateTour(@PathVariable Long id, @Valid @RequestBody TourUpdateDTO dto)
+      throws InvalidException {
+    Tour reponse = tourService.handleUpdate(id, dto);
 
-        return ResponseEntity.ok(tourMapper.toDTO(reponse));
-    }
+    return ResponseEntity.ok(tourMapper.toDTO(reponse));
+  }
 }

@@ -6,13 +6,13 @@ import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailUpdateDTO;
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Model.TourDetail;
+import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
+import com.J2EE.TourManagement.Repository.TourPriceRepository;
 import com.J2EE.TourManagement.Repository.TourRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
-
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TourDetailService {
 
-    private final TourDetailMapper tourDetailMapper;
-    private final TourRepository tourRepository;
-    private final TourDetailRepository tourDetailRepository;
+  private final TourDetailMapper tourDetailMapper;
+  private final TourRepository tourRepository;
+  private final TourDetailRepository tourDetailRepository;
+  private final TourPriceRepository tourPriceRepository;
 
     // Create
     public TourDetail handleSave(TourDetailCreateDTO dto)
@@ -51,11 +52,11 @@ public class TourDetailService {
                     "Không tìm thấy TourId (id = " + tourId + ")");
         }
 
-        List<TourDetail> details = tourOpt.get().getTourDetails();
+    List<TourDetail> details = tourOpt.get().getTourDetails();
 
-        // Map entity -> DTO
-        return tourDetailMapper.toDTOList(details);
-    }
+    // Map entity -> DTO
+    return tourDetailMapper.toDTOList(details);
+  }
 
     // Update
     public TourDetail handleUpdate(Long id, TourDetailUpdateDTO dto)
@@ -63,8 +64,8 @@ public class TourDetailService {
         TourDetail existing = tourDetailRepository.findById(id)
                 .orElseThrow(() -> new InvalidException("Không tìm thấy TourDetail để cập nhật (id = " + id + ")"));
 
-        // Map dữ liệu từ DTO sang entity có sẵn
-        tourDetailMapper.updateEntityFromDto(dto, existing);
+    // Map dữ liệu từ DTO sang entity có sẵn
+    tourDetailMapper.updateEntityFromDto(dto, existing);
 
 
         // Gán tourid cho tourdetail
@@ -78,10 +79,11 @@ public class TourDetailService {
         return tourDetailRepository.save(existing);
     }
 
-    public TourDetail getTourDetailById(long id) {
-        TourDetail tourDetail = this.tourDetailRepository.findById(id).isPresent()
-                ? this.tourDetailRepository.findById(id).get()
-                : null;
-        return tourDetail;
-    }
+  public TourDetail getTourDetailById(long id) {
+    TourDetail tourDetail = this.tourDetailRepository.findById(id).isPresent()
+                                ? this.tourDetailRepository.findById(id).get()
+                                : null;
+
+    return tourDetail;
+  }
 }

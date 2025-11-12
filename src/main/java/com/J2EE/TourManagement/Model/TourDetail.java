@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 @Entity
@@ -19,61 +18,59 @@ import java.util.List;
 @Getter
 @Setter
 public class TourDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tour_id")
-    @JsonBackReference
-    private Tour tour;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "tour_id")
+  @JsonBackReference
+  private Tour tour;
 
-    @Column(name = "startLocation")
-    @NotBlank(message = "Điểm khởi hành không được để trống")
-    private String startLocation;
+  @Column(name = "tour_id", insertable = false, updatable = false)
+  private Long tourId;
 
-    @Column(name = "startDay")
-    @NotNull(message = "Ngày bắt đầu không được để trống")
-    private LocalDate startDay;
+  @Column(name = "startLocation")
+  @NotBlank(message = "Điểm khởi hành không được để trống")
+  private String startLocation;
 
-    @Column(name = "endDay")
-    @NotNull(message = "Ngày kết thúc không được để trống")
-    @FutureOrPresent(message = "Ngày kết thúc phải là hiện tại hoặc trong tương lai")
-    private LocalDate endDay;
+  @Column(name = "startDay")
+  @NotNull(message = "Ngày bắt đầu không được để trống")
+  private LocalDate startDay;
 
-    @NotBlank(message = "Trạng thái không được để trống")
-    @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
+  @Column(name = "endDay")
+  @NotNull(message = "Ngày kết thúc không được để trống")
+  @FutureOrPresent(message =
+                       "Ngày kết thúc phải là hiện tại hoặc trong tương lai")
+  private LocalDate endDay;
 
-    private String status;
+  @NotBlank(message = "Trạng thái không được để trống")
+  @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT",
+           message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
 
-    @Column(updatable = false, name = "createdAt")
-    private LocalDateTime createdAt;
+  private String status;
 
-    @Column(name = "updateAt")
-    private LocalDateTime updateAt;
+  @Column(updatable = false, name = "createdAt")
+  private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "detail-price")
-    private List<TourPrice> tourPrices;
+  @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
+             orphanRemoval = true, fetch = FetchType.EAGER)
+  @JsonManagedReference(value = "detail-price")
+  private List<TourPrice> tourPrices;
 
-    // Quan hệ 1 TourDetail có nhiều Review
-    @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "detail-review")
-    private List<Review> reviews;
+  // Quan hệ 1 TourDetail có nhiều Review
+  @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
+             orphanRemoval = true, fetch = FetchType.EAGER)
+  @JsonManagedReference(value = "detail-review")
+  private List<Review> reviews;
 
-    // Quan hệ 1 TourDetail có 1 Itinerary
-    @OneToOne(mappedBy = "tourDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "detail-itinerary")
-    private TourItinerary itinerary;
+  // Quan hệ 1 TourDetail có 1 Itinerary
+  @OneToOne(mappedBy = "tourDetail", cascade = CascadeType.ALL,
+            orphanRemoval = true, fetch = FetchType.LAZY)
+  @JsonManagedReference(value = "detail-itinerary")
+  private TourItinerary itinerary;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.status = (this.status == null) ? "DRAFT" : this.status;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updateAt = LocalDateTime.now();
-    }
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.status = (this.status == null) ? "DRAFT" : this.status;
+  }
 }

@@ -8,6 +8,9 @@ import com.J2EE.TourManagement.Model.DTO.UserDTO;
 import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Repository.RoleRepository;
 import com.J2EE.TourManagement.Repository.UserRep;
+
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -114,6 +117,7 @@ public class UserSer {
     return this.userRep.save(user);
   }
 
+  @Transactional
   public void UpdateRefreshToken(String token, String email) {
     User currentUser = this.getUserByName(email);
     if (currentUser != null) {
@@ -121,7 +125,7 @@ public class UserSer {
       this.userRep.save(currentUser);
     }
   }
-
+  
   public User getUserByRefreshTokenAnhEmail(String token, String email) {
     return this.userRep.findByRefreshTokenAndEmail(token, email);
   }

@@ -5,14 +5,20 @@ import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailUpdateDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
+import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Service.TourDetailService;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.validation.Valid;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.apache.coyote.Response;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("api/v1/tours")
@@ -49,4 +55,5 @@ public class TourDetailController {
         TourDetail reponse = tourDetailService.handleUpdate(id, dto);
         return ResponseEntity.ok(tourDetailMapper.toDTO(reponse));
     }
+
 }

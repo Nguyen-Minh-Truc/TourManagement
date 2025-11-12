@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Model.Booking;
 import com.J2EE.TourManagement.Model.BookingDetail;
+import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Model.DTO.BookingDTO;
 import com.J2EE.TourManagement.Model.DTO.BookingDetailDTO;
 import com.J2EE.TourManagement.Model.DTO.BookingResponseDTO;
@@ -48,9 +49,10 @@ public class BookingSer {
     booking.setUser(userSer.getUserById(bookingDTO.getUserId()));
     booking.setNote(bookingDTO.getNote());
     booking.setStatus(bookingDTO.getStatus());
-    booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
+    booking.setContactFullname(bookingDTO.getContactFullname());
+    booking.setContactAddress(bookingDTO.getContactAddress());
 
     double totalPrice = 0;
     List<BookingDetail> details = new ArrayList<>();
@@ -100,7 +102,8 @@ public class BookingSer {
     booking.setStatus(bookingDTO.getStatus());
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
-    booking.setPayment(paymentSer.getPaymentById(bookingDTO.getPaymentId()));
+    booking.setContactFullname(bookingDTO.getContactFullname());
+    booking.setContactAddress(bookingDTO.getContactAddress());
 
     booking.getBookingDetails().clear();
 
@@ -173,4 +176,9 @@ public class BookingSer {
   }
 
   public boolean isIdExist(long id) { return bookingRep.existsById(id); }
+
+  public List<Booking> getBookingByUser( User user){
+  
+    return this.bookingRep.findByUser(user);
+  }
 }
