@@ -2,7 +2,6 @@ package com.J2EE.TourManagement.Controller;
 
 import com.J2EE.TourManagement.Mapper.TourMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
-import com.J2EE.TourManagement.Model.DTO.Tour.TourCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourUpdateDTO;
 import com.J2EE.TourManagement.Model.DTO.UploadFileDTO;
@@ -78,9 +77,9 @@ public class TourController {
     //Create
     @PostMapping
     @ApiMessage("Thêm tour thành công.")
-    public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody TourCreateDTO tourCreateDTO) {
-        Tour tour = tourService.handleSave(tourCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tourMapper.toDTO(tour));
+    public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody Tour tour) {
+        Tour reponse = tourService.handleSave(tour);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tourMapper.toDTO(reponse));
     }
 
     // Read all
@@ -94,12 +93,10 @@ public class TourController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getTourById(@PathVariable("id") long id)
             throws InvalidException {
-        boolean isId = this.tourService.checkIdExists(id);
-        if (!isId) {
-            throw new InvalidException("không tìm thấy id này.");
-        }
 
-        return ResponseEntity.ok().body(this.tourService.handleGetById(id));
+        Tour reponse = tourService.handleGetById(id);
+
+        return ResponseEntity.ok(tourMapper.toDTO(reponse));
     }
 
     //Update

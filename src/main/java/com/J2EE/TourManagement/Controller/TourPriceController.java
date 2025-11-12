@@ -26,9 +26,10 @@ public class TourPriceController {
         this.tourPriceMapper = tourPriceMapper;
     }
 
-    // Get all by tour detailId
+    // Read all by tour detailId
     @GetMapping("/{id}/prices")
-    public ResponseEntity<List<TourPriceDTO>> fetchTourPriceByTourId(@PathVariable("id") Long id) throws InvalidException {
+    public ResponseEntity<List<TourPriceDTO>> fetchTourPriceByTourId(@PathVariable("id") Long id)
+            throws InvalidException {
         return ResponseEntity.ok(tourPriceService.handleGetAll(id));
     }
 

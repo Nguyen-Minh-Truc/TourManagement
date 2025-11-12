@@ -26,12 +26,6 @@ public class TourDetailController {
         this.tourDetailMapper = tourDetailMapper;
     }
 
-    //Read by tour id
-    @GetMapping("/{tourId}/details")
-    public ResponseEntity<List<TourDetailDTO>> fetchTourDetailByTourId(@PathVariable("tourId") Long tourId) throws InvalidException {
-        return ResponseEntity.ok(tourDetailService.handleGetAll(tourId));
-    }
-
     //Create
     @ApiMessage("Thêm tour detail thành công!")
     @PostMapping("/details")
@@ -39,6 +33,12 @@ public class TourDetailController {
             throws InvalidException {
         TourDetail detail = tourDetailService.handleSave(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(tourDetailMapper.toDTO(detail));
+    }
+
+    //Read by tour id
+    @GetMapping("/{tourId}/details")
+    public ResponseEntity<List<TourDetailDTO>> fetchTourDetailByTourId(@PathVariable("tourId") Long tourId) throws InvalidException {
+        return ResponseEntity.ok(tourDetailService.handleGetAll(tourId));
     }
 
     //Update

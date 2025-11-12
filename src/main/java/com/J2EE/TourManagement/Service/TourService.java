@@ -2,22 +2,17 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
-import com.J2EE.TourManagement.Model.DTO.Tour.TourCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourUpdateDTO;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Repository.TourRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -28,9 +23,7 @@ public class TourService {
 
     //Create
     @Transactional
-    public Tour handleSave(TourCreateDTO dto) {
-        Tour tour = tourMapper.toEntity(dto);
-
+    public Tour handleSave(Tour tour) {
         return tourRepository.save(tour);
     }
 
@@ -45,7 +38,7 @@ public class TourService {
     }
 
     //Update
-    public Tour handleUpdate(Long id, TourUpdateDTO dto)  throws InvalidException {
+    public Tour handleUpdate(Long id, TourUpdateDTO dto) throws InvalidException {
         Tour existingTour = tourRepository.findById(id)
                 .orElseThrow(() -> new InvalidException("Không tìm thấy Tour để cập nhật (id = " + id + ")"));
 
@@ -56,14 +49,13 @@ public class TourService {
     }
 
     //get by id
-
-    public Tour handleGetById(Long id) {
-        Tour tour = this.tourRepository.findById(id).isPresent() ? this.tourRepository.findById(id).get() : null;
-        return tour;
-
+    public Tour handleGetById(Long id)
+            throws InvalidException {
+        return tourRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Tour không tồn tại id = " + id + ""));
     }
 
-    public boolean checkIdExists(long id){
+    public boolean checkIdExists(long id) {
         return this.tourRepository.existsById(id);
     }
 

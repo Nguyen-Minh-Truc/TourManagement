@@ -10,7 +10,6 @@ import java.util.List;
 public interface TourItineraryMapper {
 
     // Entity -> ResponseDTO
-    @Mapping(target = "tourDetailId", source = "tourDetail.id")
     TourItineraryDTO toResponseDTO(TourItinerary itinerary);
 
     List<TourItineraryDTO> toResponseDTOList(List<TourItinerary> itineraries);

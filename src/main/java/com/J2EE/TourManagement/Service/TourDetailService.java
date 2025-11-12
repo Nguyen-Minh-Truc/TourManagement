@@ -25,31 +25,36 @@ public class TourDetailService {
     private final TourRepository tourRepository;
     private final TourDetailRepository tourDetailRepository;
 
-    public List<TourDetailDTO> handleGetAll(Long tourId) throws InvalidException {
+    // Create
+    public TourDetail handleSave(TourDetailCreateDTO dto)
+            throws InvalidException {
+        TourDetail detail = tourDetailMapper.toEntity(dto);
+
+        // Gán tourid cho tourdetail
+        if (dto.getTourId() != null) {
+            Tour tour = tourRepository.findById(dto.getTourId())
+                    .orElseThrow(() -> new InvalidException(
+                            "Không tìm thấy Tour với id = " + dto.getTourId()));
+            detail.setTour(tour);
+        }
+
+        return tourDetailRepository.save(detail);
+    }
+
+    //Read by tour id
+    public List<TourDetailDTO> handleGetAll(Long tourId)
+            throws InvalidException {
 
         Optional<Tour> tourOpt = tourRepository.findById(tourId);
         if (tourOpt.isEmpty()) {
             throw new InvalidException(
-                    "Không tìm thấy TourId để detall (id = " + tourId + ")");
+                    "Không tìm thấy TourId (id = " + tourId + ")");
         }
 
         List<TourDetail> details = tourOpt.get().getTourDetails();
 
         // Map entity -> DTO
         return tourDetailMapper.toDTOList(details);
-    }
-
-    // Create
-    public TourDetail handleSave(TourDetailCreateDTO dto)
-            throws InvalidException {
-        if (!tourRepository.existsById(dto.getTourId())) {
-            throw new InvalidException(
-                    "Không tìm thấy TourId để thêm (id = " + dto.getTourId() + ")");
-        }
-
-        TourDetail detail = tourDetailMapper.toEntity(dto);
-
-        return tourDetailRepository.save(detail);
     }
 
     // Update
@@ -60,6 +65,15 @@ public class TourDetailService {
 
         // Map dữ liệu từ DTO sang entity có sẵn
         tourDetailMapper.updateEntityFromDto(dto, existing);
+
+
+        // Gán tourid cho tourdetail
+        if (dto.getTourId() != null) {
+            Tour tour = tourRepository.findById(dto.getTourId())
+                    .orElseThrow(() -> new InvalidException(
+                            "Không tìm thấy Tour với id = " + dto.getTourId()));
+            existing.setTour(tour);
+        }
 
         return tourDetailRepository.save(existing);
     }
