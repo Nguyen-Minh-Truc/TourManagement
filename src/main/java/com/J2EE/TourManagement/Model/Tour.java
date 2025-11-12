@@ -32,7 +32,7 @@ public class Tour {
 
     private String longDesc;
 
-    @Pattern(regexp = "^\\d+ ngày \\d+ đêm$", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
+    @Pattern(regexp = "\\d+\\s*ngày\\s*\\d+\\s*đêm", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
     private String duration;
 
     @NotNull(message = "Vui lòng nhập sức chứa")

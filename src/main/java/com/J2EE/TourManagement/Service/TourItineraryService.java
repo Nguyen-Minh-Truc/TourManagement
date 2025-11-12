@@ -2,18 +2,15 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Mapper.TourItineraryMapper;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
-import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryCreateDTO;
-import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryResponseDTO;
+import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryDTO;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryUpdateDTO;
-import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Model.TourItinerary;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
 import com.J2EE.TourManagement.Repository.TourItineraryRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,7 +24,8 @@ public class TourItineraryService {
     private final TourDetailRepository tourDetailRepository;
 
     //Create
-    public TourItinerary handleSave(TourItineraryCreateDTO dto) throws InvalidException {
+    public TourItinerary handleSave(TourItineraryCreateDTO dto)
+            throws InvalidException {
         TourDetail tourDetail = tourDetailRepository.findById(dto.getTourDetailId())
                 .orElseThrow(() -> new InvalidException("Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
 
@@ -46,7 +44,7 @@ public class TourItineraryService {
     public ResultPaginationDTO handleGetAll(Specification<TourItinerary> spec, Pageable pageable) {
         Page<TourItinerary> tourItineraries = tourItineraryRepository.findAll(spec, pageable);
 
-        Page<TourItineraryResponseDTO> dtoPage = tourItineraries.map(tourItineraryMapper::toResponseDTO);
+        Page<TourItineraryDTO> dtoPage = tourItineraries.map(tourItineraryMapper::toResponseDTO);
 
         return PaginationUtils.build(dtoPage, pageable);
     }

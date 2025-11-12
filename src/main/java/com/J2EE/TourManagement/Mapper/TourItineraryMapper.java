@@ -11,9 +11,9 @@ public interface TourItineraryMapper {
 
     // Entity -> ResponseDTO
     @Mapping(target = "tourDetailId", source = "tourDetail.id")
-    TourItineraryResponseDTO toResponseDTO(TourItinerary itinerary);
+    TourItineraryDTO toResponseDTO(TourItinerary itinerary);
 
-    List<TourItineraryResponseDTO> toResponseDTOList(List<TourItinerary> itineraries);
+    List<TourItineraryDTO> toResponseDTOList(List<TourItinerary> itineraries);
 
     // CreateDTO -> Entity
     @Mapping(target = "id", ignore = true)

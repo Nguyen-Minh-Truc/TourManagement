@@ -1,6 +1,9 @@
 package com.J2EE.TourManagement.Controller;
 
+import com.J2EE.TourManagement.Mapper.TourDetailMapper;
+import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
+import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailUpdateDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Service.TourDetailService;
@@ -21,11 +24,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("api/v1/tours")
 public class TourDetailController {
 
-  private final TourDetailService tourDetailService;
 
-  public TourDetailController(TourDetailService tourDetailService) {
-    this.tourDetailService = tourDetailService;
-  }
+    private final TourDetailService tourDetailService;
+    private final TourDetailMapper tourDetailMapper;
+
+    public TourDetailController(TourDetailService tourDetailService, TourDetailMapper tourDetailMapper) {
+        this.tourDetailService = tourDetailService;
+        this.tourDetailMapper = tourDetailMapper;
+    }
+
 
   // Read by tour id
   @GetMapping("/{tourId}/details")
@@ -35,31 +42,22 @@ public class TourDetailController {
     return ResponseEntity.ok(tourDetailService.handleGetAll(tourId));
   }
 
-  @ApiMessage("Thêm tour detail thành công!")
-  @PostMapping("/details")
-  public ResponseEntity<TourDetail>
-  create(@Valid @RequestBody TourDetail detail) throws InvalidException {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(tourDetailService.handleSave(detail));
-  }
+    //Create
+    @ApiMessage("Thêm tour detail thành công!")
+    @PostMapping("/details")
+    public ResponseEntity<TourDetailDTO> create(@Valid @RequestBody TourDetailCreateDTO dto)
+            throws InvalidException {
+        TourDetail detail = tourDetailService.handleSave(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tourDetailMapper.toDTO(detail));
+    }
 
-
-  @ApiMessage("Sửa tour detail thành công!")
-  @PutMapping("/details/{id}")
-  public ResponseEntity<TourDetail>
-  update(@PathVariable Long id, @Valid @RequestBody TourDetail detail)
-      throws InvalidException {
-    return ResponseEntity.ok(tourDetailService.handleUpdate(id, detail));
-  }
-
-  @GetMapping("/details/{id}")
-  public ResponseEntity<TourDetail> update(@PathVariable("id") long id)
-      throws InvalidException {
-        TourDetail tourDetail = this.tourDetailService.getTourDetailById(id);
-        if(tourDetail == null){
-            throw new InvalidException("không tìm thấy tour này.");
-        }
-        return ResponseEntity.ok(tourDetail);
-      }
+    //Update
+    @ApiMessage("Sửa tour detail thành công!")
+    @PutMapping("/details/{id}")
+    public ResponseEntity<TourDetailDTO> update(@PathVariable Long id, @Valid @RequestBody TourDetailUpdateDTO dto)
+            throws InvalidException {
+        TourDetail reponse = tourDetailService.handleUpdate(id, dto);
+        return ResponseEntity.ok(tourDetailMapper.toDTO(reponse));
+    }
 
 }

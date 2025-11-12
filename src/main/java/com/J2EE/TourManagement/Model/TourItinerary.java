@@ -17,10 +17,11 @@ public class TourItinerary {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "tour_detail_id")
-  @JsonBackReference
-  private TourDetail tourDetail;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tour_detail_id")
+    @JsonBackReference(value = "detail-itinerary")
+    private TourDetail tourDetail;
 
   @NotBlank(message = "Tiêu đề lịch trình không được để trống")
   @Size(max = 255, message = "Tiêu đề lịch trình không được vượt quá 255 ký tự")
