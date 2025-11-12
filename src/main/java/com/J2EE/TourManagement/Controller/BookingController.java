@@ -1,15 +1,18 @@
 package com.J2EE.TourManagement.Controller;
 
 import com.J2EE.TourManagement.Model.Booking;
+import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Model.DTO.BookingDTO;
 import com.J2EE.TourManagement.Model.DTO.BookingResponseDTO;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Service.BookingSer;
+import com.J2EE.TourManagement.Service.UserSer;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import java.io.InvalidClassException;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class BookingController {
   private final BookingSer bookingSer;
-  public BookingController(BookingSer bookingSer) {
+  private final UserSer userSer;
+  public BookingController(BookingSer bookingSer, UserSer userSer) {
     this.bookingSer = bookingSer;
+    this.userSer = userSer;
   }
 
   @PostMapping("/booking/create")
@@ -62,7 +67,8 @@ public class BookingController {
 
   @PutMapping("booking/{id}")
   public ResponseEntity<?> putMethodName(@PathVariable("id") long id,
-                                         @RequestBody BookingDTO bookingDTO) throws InvalidException {
+                                         @RequestBody BookingDTO bookingDTO)
+      throws InvalidException {
 
     Boolean isIdExist = this.bookingSer.isIdExist(id);
     if (!isIdExist) {
@@ -74,5 +80,10 @@ public class BookingController {
     return ResponseEntity.ok().body(bookingResponseDTO);
   }
 
-  
+  @GetMapping("/booking/user/{id}")
+  public ResponseEntity<?> getBookingByUser(@PathVariable("id") long id) {
+    User user = this.userSer.getUserById(id);
+    List<Booking> listBookings = this.bookingSer.getBookingByUser(user);
+    return ResponseEntity.ok().body(listBookings);
+  }
 }

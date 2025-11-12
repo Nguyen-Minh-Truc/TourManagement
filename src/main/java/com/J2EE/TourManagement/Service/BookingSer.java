@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Model.Booking;
 import com.J2EE.TourManagement.Model.BookingDetail;
+import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Model.DTO.BookingDTO;
 import com.J2EE.TourManagement.Model.DTO.BookingDetailDTO;
 import com.J2EE.TourManagement.Model.DTO.BookingResponseDTO;
@@ -175,4 +176,9 @@ public class BookingSer {
   }
 
   public boolean isIdExist(long id) { return bookingRep.existsById(id); }
+
+  public List<Booking> getBookingByUser( User user){
+  
+    return this.bookingRep.findByUser(user);
+  }
 }
