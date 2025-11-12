@@ -72,42 +72,60 @@ public class TourController {
     UploadFileDTO uploadFileDTO = new UploadFileDTO(uploadFile, Instant.now());
     return ResponseEntity.ok().body(uploadFileDTO);
   }
+  
+  @DeleteMapping("/file")
+  public ResponseEntity<String> deleteFile(@RequestParam("url") String fileUrl)
+      throws URISyntaxException {
+    try {
+      boolean deleted = fileService.deleteFileByUrl(fileUrl);
+      if (deleted) {
+        return ResponseEntity.ok("Xoá file thành công");
+      } else {
+        return ResponseEntity.status(404).body("File không tồn tại");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return ResponseEntity.status(400).body("Lỗi: " + e.getMessage());
+    }
+  }
 
-    //Create
-    @PostMapping
-    @ApiMessage("Thêm tour thành công.")
-    public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody TourCreateDTO tourCreateDTO) {
-        Tour tour = tourService.handleSave(tourCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tourMapper.toDTO(tour));
+  // Create
+  @PostMapping
+  @ApiMessage("Thêm tour thành công.")
+  public ResponseEntity<TourDTO>
+  postNewTour(@Valid @RequestBody TourCreateDTO tourCreateDTO) {
+    Tour tour = tourService.handleSave(tourCreateDTO);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(tourMapper.toDTO(tour));
+  }
+
+  // Read all
+  @GetMapping
+  public ResponseEntity<ResultPaginationDTO>
+  fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
+    return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
+  }
+
+  // Read by id
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getTourById(@PathVariable("id") long id)
+      throws InvalidException {
+    boolean isId = this.tourService.checkIdExists(id);
+    if (!isId) {
+      throw new InvalidException("không tìm thấy id này.");
     }
 
-    // Read all
-    @GetMapping
-    public ResponseEntity<ResultPaginationDTO>
-    fetchAllTour(@Filter Specification<Tour> spec, Pageable pageable) {
-        return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
-    }
+    return ResponseEntity.ok().body(this.tourService.handleGetById(id));
+  }
 
-    //Read by id
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getTourById(@PathVariable("id") long id)
-            throws InvalidException {
-        boolean isId = this.tourService.checkIdExists(id);
-        if (!isId) {
-            throw new InvalidException("không tìm thấy id này.");
-        }
+  // Update
+  @PutMapping("/{id}")
+  @ApiMessage("cập nhật tour thành công.")
+  public ResponseEntity<TourDTO>
+  updateTour(@PathVariable Long id, @Valid @RequestBody TourUpdateDTO dto)
+      throws InvalidException {
+    Tour reponse = tourService.handleUpdate(id, dto);
 
-        return ResponseEntity.ok().body(this.tourService.handleGetById(id));
-    }
-
-    //Update
-    @PutMapping("/{id}")
-    @ApiMessage("cập nhật tour thành công.")
-    public ResponseEntity<TourDTO> updateTour(@PathVariable Long id, @Valid @RequestBody TourUpdateDTO dto)
-            throws InvalidException {
-        Tour reponse = tourService.handleUpdate(id, dto);
-
-        return ResponseEntity.ok(tourMapper.toDTO(reponse));
-    }
-
+    return ResponseEntity.ok(tourMapper.toDTO(reponse));
+  }
 }
