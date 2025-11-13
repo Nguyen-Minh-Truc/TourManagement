@@ -10,8 +10,7 @@ import java.util.List;
 @Data
 public class TourDetailUpdateDTO {
 
-    @NotNull(message = "ID không được để trống khi cập nhật")
-    private Long id;
+    private Long tourId;
 
     private String startLocation;
 

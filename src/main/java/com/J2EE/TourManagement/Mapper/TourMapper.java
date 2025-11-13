@@ -1,6 +1,5 @@
 package com.J2EE.TourManagement.Mapper;
 
-import com.J2EE.TourManagement.Model.DTO.Tour.TourCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Tour.TourUpdateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceCreateDTO;
@@ -14,8 +13,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {TourDetailMapper.class})
 public interface TourMapper {
-
-    Tour toEntity(TourCreateDTO dto);
 
     TourDTO toDTO(Tour tour);
 

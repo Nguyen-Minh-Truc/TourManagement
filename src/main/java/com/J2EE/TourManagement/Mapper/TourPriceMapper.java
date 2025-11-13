@@ -6,10 +6,7 @@ import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceUpdateDTO;
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceDTO;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 import java.util.List;
 
