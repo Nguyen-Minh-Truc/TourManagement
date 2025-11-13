@@ -6,6 +6,7 @@ import com.J2EE.TourManagement.Model.DTO.Review.ReviewDTO;
 import com.J2EE.TourManagement.Model.DTO.Review.ReviewUpdateDTO;
 import com.J2EE.TourManagement.Model.Review;
 import com.J2EE.TourManagement.Model.TourDetail;
+import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.ReviewRepository;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
@@ -45,7 +46,7 @@ public class ReviewService {
         Optional<TourDetail> opt = tourDetailRepository.findById(id);
         if (opt.isEmpty()) {
             throw new InvalidException(
-                    "Không tìm thấy TourDetail Id (id = "+ id +")"
+                    "Không tìm thấy TourDetail Id (id = " + id + ")"
             );
         }
 
@@ -70,5 +71,21 @@ public class ReviewService {
         }
 
         return reviewRepository.save(existing);
+    }
+
+    // Delete
+    public void handleDelete(Long id)
+            throws InvalidException {
+        Review existing = reviewRepository.findById(id)
+                .orElseThrow(() -> new InvalidException(
+                        "Không  tìm thấy Review với id = " + id));
+
+        // Gỡ Review khỏi danh sách trong TourDetail
+        TourDetail detail = existing.getTourDetail();
+        if (detail != null && detail.getReviews() != null) {
+            detail.getReviews().remove(existing);
+        }
+
+        reviewRepository.delete(existing);
     }
 }

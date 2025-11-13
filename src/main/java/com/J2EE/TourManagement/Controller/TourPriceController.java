@@ -53,4 +53,12 @@ public class TourPriceController {
         return ResponseEntity.ok(tourPriceMapper.toDTO(reponse));
     }
 
+    // Delete
+    @ApiMessage("Xóa tour Price thành công!")
+    @DeleteMapping("/prices/{id}")
+    public ResponseEntity<List<TourPrice>> delete(@PathVariable Long id)
+            throws InvalidException {
+        tourPriceService.handleDelete(id);
+        return ResponseEntity.ok(List.of());
+    }
 }
