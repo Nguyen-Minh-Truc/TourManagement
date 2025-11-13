@@ -2,6 +2,7 @@ package com.J2EE.TourManagement.Model.DTO.TourDetail;
 
 import com.J2EE.TourManagement.Model.DTO.Review.ReviewDTO;
 import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryDTO;
 import lombok.NoArgsConstructor;
@@ -18,14 +19,18 @@ public class TourDetailDTO {
 
     private String startLocation;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private LocalDate startDay;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private LocalDate endDay;
 
     private String status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateAt;
 
     // Danh sách giá (TourPrice)

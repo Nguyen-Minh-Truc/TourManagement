@@ -1,6 +1,7 @@
 package com.J2EE.TourManagement.Model.DTO.Tour;
 
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +22,14 @@ public class TourDTO {
     private Integer capacity;
     private String location;
     private String status;
-    private String imageUrl;
+    private String img;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
     private String createdBy;
     private String updatedBy;
 
