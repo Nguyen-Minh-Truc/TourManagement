@@ -51,6 +51,9 @@ public class TourDetail {
   @Column(updatable = false, name = "createdAt")
   private LocalDateTime createdAt;
 
+  @Column(name = "updatedAt")
+  private LocalDateTime updatedAt;
+
   @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
              orphanRemoval = true, fetch = FetchType.EAGER)
   @JsonManagedReference(value = "detail-price")
