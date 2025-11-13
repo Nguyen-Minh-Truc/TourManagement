@@ -12,17 +12,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TourPriceMapper {
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "tourDetail", ignore = true)
-    })
     TourPrice toEntity(TourPriceCreateDTO tourPriceCreateDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "tourDetail", ignore = true)
-    })
     void updateEntityFromDto(TourPriceUpdateDTO dto, @MappingTarget TourPrice entity);
 
     TourPriceDTO toDTO(TourPrice tourPrice);

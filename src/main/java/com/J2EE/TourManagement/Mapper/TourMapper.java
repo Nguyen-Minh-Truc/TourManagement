@@ -19,19 +19,9 @@ public interface TourMapper {
     List<TourDTO> toDTOList(List<Tour> tours);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "createdAt", ignore = true),
-            @Mapping(target = "updatedAt", ignore = true),
-            @Mapping(target = "createdBy", ignore = true),
-            @Mapping(target = "updatedBy", ignore = true),
-            @Mapping(target = "tourDetails", ignore = true)
-    })
     void updateEntityFromDto(TourUpdateDTO dto, @MappingTarget Tour entity);
 
     List<TourDetail> toTourDetailEntities(List<TourDetailCreateDTO> dtoList);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "tourDetail", ignore = true)
     List<TourPrice> toTourPriceEntities(List<TourPriceCreateDTO> dtoList);
 }
