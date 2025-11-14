@@ -63,6 +63,12 @@ public class Tour {
     @JsonManagedReference
     private List<TourDetail> tourDetails;
 
+    // Quan hệ 1 Tour có nhiều Review
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL,
+            orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "detail-review")
+    private List<Review> reviews;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

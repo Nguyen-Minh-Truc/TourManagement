@@ -7,6 +7,7 @@ import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryDTO;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryUpdateDTO;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Model.TourItinerary;
+import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
 import com.J2EE.TourManagement.Repository.TourItineraryRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
@@ -70,5 +71,19 @@ public class TourItineraryService {
         }
 
         return tourItineraryRepository.save(existing);
+    }
+
+    // Delete
+    public void handleDelete(Long id)
+            throws InvalidException {
+        TourItinerary existing = tourItineraryRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Không  tìm thấy TourItinerary với id = " + id));
+
+        TourDetail detail = existing.getTourDetail();
+        if (detail != null) {
+            detail.setItinerary(null);
+        }
+
+        tourItineraryRepository.delete(existing);
     }
 }

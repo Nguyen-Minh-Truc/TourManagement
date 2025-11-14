@@ -36,9 +36,6 @@ public class TourDetailDTO {
     // Danh sách giá (TourPrice)
     private List<TourPriceDTO> tourPrices;
 
-    // Danh sách review
-    private List<ReviewDTO> reviews;
-
     // Itinerary
     private TourItineraryDTO itinerary;
 }

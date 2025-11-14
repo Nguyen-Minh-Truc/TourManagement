@@ -8,6 +8,7 @@ import com.J2EE.TourManagement.Model.Review;
 import com.J2EE.TourManagement.Service.ReviewService;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/tour_details")
+@RequestMapping("api/v1/tours")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -56,4 +57,12 @@ public class ReviewController {
         return ResponseEntity.ok(reviewMapper.toResponseDTO(reponse));
     }
 
+    // Delete
+    @ApiMessage("Xóa review thành công!")
+    @DeleteMapping("reviews/{id}")
+    public ResponseEntity<List<Review>> delete(@PathVariable Long id)
+            throws InvalidException {
+        reviewService.handleDelete(id);
+        return ResponseEntity.ok(List.of());
+    }
 }

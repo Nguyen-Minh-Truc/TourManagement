@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/tour_details")
 public class TourItineraryController {
@@ -50,5 +52,14 @@ public class TourItineraryController {
     public ResponseEntity<TourItineraryDTO> updateItinerary(@PathVariable Long id, @RequestBody TourItineraryUpdateDTO itineraryUpdateDTO) throws InvalidException {
         TourItinerary updated = tourItineraryService.handleUpdate(id, itineraryUpdateDTO);
         return ResponseEntity.ok(tourItineraryMapper.toResponseDTO(updated));
+    }
+
+    // Delete
+    @ApiMessage("Xóa lộ trình tour thành công!")
+    @DeleteMapping("/itinerary/{id}")
+    public ResponseEntity<List<TourItinerary>> delete(@PathVariable Long id)
+            throws InvalidException {
+        tourItineraryService.handleDelete(id);
+        return ResponseEntity.ok(List.of());
     }
 }

@@ -1,5 +1,6 @@
 package com.J2EE.TourManagement.Model.DTO.Tour;
 
+import com.J2EE.TourManagement.Model.DTO.Review.ReviewDTO;
 import com.J2EE.TourManagement.Model.DTO.TourDetail.TourDetailDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -34,4 +35,5 @@ public class TourDTO {
     private String updatedBy;
 
     private List<TourDetailDTO> tourDetails;
+    private List<ReviewDTO> reviews;
 }

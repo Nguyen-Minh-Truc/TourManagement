@@ -12,6 +12,7 @@ import com.J2EE.TourManagement.Util.error.InvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,6 +72,21 @@ public class TourPriceService {
         }
 
         return tourPriceRepository.save(existing);
+    }
+
+    // Delete
+    public void handleDelete(Long id)
+            throws InvalidException {
+        TourPrice existing = tourPriceRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Không  tìm thấy TourPrice với id = " + id));
+
+        // Gỡ TourPrice khỏi danh sách trong TourDetail
+        TourDetail detail = existing.getTourDetail();
+        if (detail != null && detail.getTourPrices() != null) {
+            detail.getTourPrices().remove(existing);
+        }
+
+        tourPriceRepository.delete(existing);
     }
 
     public TourPrice getTourPriceById(long id) {
