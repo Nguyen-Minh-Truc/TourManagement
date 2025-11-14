@@ -1,14 +1,14 @@
 package com.J2EE.TourManagement.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "roles")
 public class Role {
-  @Id private long id;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @Column(name = "nameRole") private String nameRole;
 

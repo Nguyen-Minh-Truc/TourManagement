@@ -25,7 +25,8 @@ public class Tour {
     @Size(max = 255, message = "Tiêu đề không được vượt quá 255 ký tự")
     private String title;
 
-    private String img;
+    @Column(name = "imgUrl")
+    private String imgUrl;
 
     @Size(max = 500, message = "Mô tả ngắn không được vượt quá 500 ký tự")
     private String shortDesc;
@@ -51,6 +52,9 @@ public class Tour {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Column(name = "rating")
+    private Double rating;
 
     private String createdBy;
     private String updatedBy;
