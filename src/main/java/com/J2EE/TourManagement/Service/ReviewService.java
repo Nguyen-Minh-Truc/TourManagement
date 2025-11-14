@@ -5,10 +5,12 @@ import com.J2EE.TourManagement.Model.DTO.Review.ReviewCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.Review.ReviewDTO;
 import com.J2EE.TourManagement.Model.DTO.Review.ReviewUpdateDTO;
 import com.J2EE.TourManagement.Model.Review;
+import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Model.TourDetail;
 import com.J2EE.TourManagement.Model.TourPrice;
 import com.J2EE.TourManagement.Repository.ReviewRepository;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
+import com.J2EE.TourManagement.Repository.TourRepository;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,19 +23,19 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
-    private final TourDetailRepository tourDetailRepository;
+    private final TourRepository tourRepository;
 
     //Create
     public Review handleSave(ReviewCreateDTO dto)
             throws InvalidException {
         Review review = reviewMapper.toEntity(dto);
 
-        // Gán tourDetail id cho review
-        if (dto.getTourDetailId() != null) {
-            TourDetail detail = tourDetailRepository.findById(dto.getTourDetailId())
+        // Gán tour id cho review
+        if (dto.getTourId() != null) {
+            Tour tour = tourRepository.findById(dto.getTourId())
                     .orElseThrow(() -> new InvalidException(
-                            "Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
-            review.setTourDetail(detail);
+                            "Không tìm thấy TourDetail với id = " + dto.getTourId()));
+            review.setTour(tour);
         }
 
         return reviewRepository.save(review);
@@ -43,10 +45,10 @@ public class ReviewService {
     public List<Review> handleGetAll(Long id)
             throws InvalidException {
 
-        Optional<TourDetail> opt = tourDetailRepository.findById(id);
+        Optional<Tour> opt = tourRepository.findById(id);
         if (opt.isEmpty()) {
             throw new InvalidException(
-                    "Không tìm thấy TourDetail Id (id = " + id + ")"
+                    "Không tìm thấy Tour Id (id = " + id + ")"
             );
         }
 
@@ -62,12 +64,12 @@ public class ReviewService {
 
         reviewMapper.updateEntityFromDto(dto, existing);
 
-        // Gán tourDetail id cho review
-        if (dto.getTourDetailId() != null) {
-            TourDetail detail = tourDetailRepository.findById(dto.getTourDetailId())
+        // Gán tour id cho review
+        if (dto.getTourId() != null) {
+            Tour tour = tourRepository.findById(dto.getTourId())
                     .orElseThrow(() -> new InvalidException(
-                            "Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
-            existing.setTourDetail(detail);
+                            "Không tìm thấy TourDetail với id = " + dto.getTourId()));
+            existing.setTour(tour);
         }
 
         return reviewRepository.save(existing);
@@ -80,10 +82,10 @@ public class ReviewService {
                 .orElseThrow(() -> new InvalidException(
                         "Không  tìm thấy Review với id = " + id));
 
-        // Gỡ Review khỏi danh sách trong TourDetail
-        TourDetail detail = existing.getTourDetail();
-        if (detail != null && detail.getReviews() != null) {
-            detail.getReviews().remove(existing);
+        // Gỡ Review khỏi danh sách trong Tour
+        Tour tour = existing.getTour();
+        if (tour != null && tour.getReviews() != null) {
+            tour.getReviews().remove(existing);
         }
 
         reviewRepository.delete(existing);

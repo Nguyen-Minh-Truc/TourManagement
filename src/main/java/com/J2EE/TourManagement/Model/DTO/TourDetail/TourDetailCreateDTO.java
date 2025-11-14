@@ -36,7 +36,4 @@ public class TourDetailCreateDTO {
 
     @Valid
     private TourItineraryCreateDTO tourItinerary;
-
-    @Valid
-    private List<ReviewCreateDTO> reviews;
 }

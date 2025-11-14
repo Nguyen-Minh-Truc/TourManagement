@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ReviewUpdateDTO {
-    private Long tourDetailId;
+    private Long tourId;
 
     @Size(max = 1000, message = "Nội dung đánh giá không được vượt quá 1000 ký tự")
     private String content;
