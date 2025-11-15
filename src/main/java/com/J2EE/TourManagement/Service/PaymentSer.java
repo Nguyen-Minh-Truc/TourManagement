@@ -116,8 +116,7 @@ public class PaymentSer {
     }
   }
   public Payment createPaymentAfterSuccess(long bookingId, String method)
-      throws InvalidException {
-    Booking booking = bookingRep.findById(bookingId).orElseThrow(
+      throws InvalidException {Booking booking = bookingRep.findById(bookingId).orElseThrow(
         () -> new InvalidException("Không tìm thấy booking id: " + bookingId));
 
     // Nếu booking đã có payment rồi thì bỏ qua

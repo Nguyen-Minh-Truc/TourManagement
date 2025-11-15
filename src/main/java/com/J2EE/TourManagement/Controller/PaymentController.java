@@ -4,7 +4,9 @@ import com.J2EE.TourManagement.Model.Booking;
 import com.J2EE.TourManagement.Model.DTO.PaymentDTO;
 import com.J2EE.TourManagement.Model.Payment;
 import com.J2EE.TourManagement.Service.BookingSer;
+import com.J2EE.TourManagement.Service.EmailService;
 import com.J2EE.TourManagement.Service.PaymentSer;
+import com.J2EE.TourManagement.Util.Utils;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import com.J2EE.TourManagement.Util.error.InvalidException;
@@ -37,10 +39,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PaymentController {
   private final PaymentSer paymentSer;
   private final BookingSer bookingSer;
+  private final EmailService emailService;
 
-  public PaymentController(PaymentSer paymentSer, BookingSer bookingSer) {
+  public PaymentController(PaymentSer paymentSer, BookingSer bookingSer, EmailService emailService) {
     this.paymentSer = paymentSer;
     this.bookingSer = bookingSer;
+    this.emailService = emailService;
   }
 
   @PostMapping("/payment/create/cash")
@@ -88,8 +92,24 @@ public class PaymentController {
         // Lấy id_booking từ orderInfo (ví dụ: "Thanh toán đơn hàng #5")
         long bookingId = extractBookingId(orderInfo);
 
-        Payment payment =
-            paymentSer.createPaymentAfterSuccess(bookingId, "VNPAY");
+        Payment payment = paymentSer.createPaymentAfterSuccess(bookingId, "VNPAY");
+
+        Booking booking = this.bookingSer.getById(bookingId);
+        String customerEmail = booking.getContactEmail();
+
+        String formattedPrice = Utils.formatVND(booking.getTotalPrice());
+        // Gửi email thông báo
+        String subject = "Xác nhận thanh toán thành công";
+        String message = "Xin chào " + booking.getUser().getFullname() +
+                         ",\n\n"
+                         + "Thanh toán cho đơn đặt tour #" + bookingId +
+                         " đã được xác nhận thành công.\n"
+                         + "Tổng tiền: " + formattedPrice + " VND\n"
+                         + "Hình thức: VNPay\n\n"
+                         + "Cảm ơn bạn đã sử dụng dịch vụ của Tour Management!";
+
+        emailService.sendEmail(customerEmail, subject, message);
+
         return ResponseEntity.ok(payment);
       } else {
         return ResponseEntity.badRequest().body(
