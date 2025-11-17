@@ -53,6 +53,7 @@ public class BookingSer {
     booking.setContactPhone(bookingDTO.getContactPhone());
     booking.setContactFullname(bookingDTO.getContactFullname());
     booking.setContactAddress(bookingDTO.getContactAddress());
+    booking.setStatus(EnumStatusBooking.PENDING);
 
     double totalPrice = 0;
     List<BookingDetail> details = new ArrayList<>();

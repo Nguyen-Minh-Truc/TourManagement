@@ -52,7 +52,6 @@ public class Tour {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
     @Column(name = "rating")
     private Double rating;
 
