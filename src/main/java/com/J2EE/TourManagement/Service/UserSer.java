@@ -5,27 +5,33 @@ import com.J2EE.TourManagement.Model.DTO.Meta;
 import com.J2EE.TourManagement.Model.DTO.RegisterDTO;
 import com.J2EE.TourManagement.Model.DTO.ResultPaginationDTO;
 import com.J2EE.TourManagement.Model.DTO.UserDTO;
+import com.J2EE.TourManagement.Model.Role;
 import com.J2EE.TourManagement.Model.User;
 import com.J2EE.TourManagement.Repository.RoleRepository;
 import com.J2EE.TourManagement.Repository.UserRep;
-
 import jakarta.transaction.Transactional;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserSer {
+
+  private final PasswordEncoder passwordEncoder;
   private final UserRep userRep;
   private final RoleRepository roleRepository;
-  public UserSer(UserRep userRep, RoleRepository roleRepository) {
+  public UserSer(UserRep userRep, RoleRepository roleRepository,
+                 PasswordEncoder passwordEncoder) {
     this.userRep = userRep;
     this.roleRepository = roleRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public User handleSaveUser(User user) {
@@ -33,7 +39,6 @@ public class UserSer {
     user.setStatus(true);
     return this.userRep.save(user);
   }
-
 
   public CreateUserDTO convertUserToResUserDto(User user) {
     CreateUserDTO resUserDTO = new CreateUserDTO();
@@ -125,7 +130,7 @@ public class UserSer {
       this.userRep.save(currentUser);
     }
   }
-  
+
   public User getUserByRefreshTokenAnhEmail(String token, String email) {
     return this.userRep.findByRefreshTokenAndEmail(token, email);
   }
@@ -147,5 +152,29 @@ public class UserSer {
     user.setPassword(registerDTO.getPassword());
     user.setRole(this.roleRepository.findByNameRole("user"));
     return user;
+  }
+
+  public User createUserFromGoogle(OAuth2User oAuth2User) {
+    String email = oAuth2User.getAttribute("email");
+    String fullname = oAuth2User.getAttribute("name");
+
+    User existingUser = this.userRep.findByEmail(email);
+    if (existingUser != null)
+      return existingUser;
+
+    User newUser = new User();
+    newUser.setEmail(email);
+    newUser.setFullname(fullname);
+
+    // set password ngẫu nhiên
+    String randomPass = UUID.randomUUID().toString();
+    newUser.setPassword(passwordEncoder.encode(randomPass));
+
+    // gán role mặc định
+    Role defaultRole = this.roleRepository.findByNameRole("user");
+    newUser.setRole(defaultRole);
+    newUser.setStatus(true);
+
+    return this.userRep.save(newUser);
   }
 }
