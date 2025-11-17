@@ -1,6 +1,10 @@
 package com.J2EE.TourManagement.Model.DTO.TourDetail;
 
+import com.J2EE.TourManagement.Model.DTO.Review.ReviewCreateDTO;
+import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceCreateDTO;
+import com.J2EE.TourManagement.Model.TourItinerary;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.boot.convert.DataSizeUnit;
@@ -26,4 +30,10 @@ public class TourDetailCreateDTO {
 
     @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
     private String status;
+
+    @Valid
+    private List<TourPriceCreateDTO> tourPrices;
+
+    @Valid
+    private TourItineraryCreateDTO tourItinerary;
 }

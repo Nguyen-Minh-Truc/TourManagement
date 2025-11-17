@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class ReviewCreateDTO {
 
-    @NotNull(message = "ID chi tiết tour không được để trống")
-    private Long tourDetailId;
+    @NotNull(message = "ID tour không được để trống")
+    private Long tourId;
 
     @NotBlank(message = "Tên người đánh giá không được để trống")
     @Size(max = 100, message = "Tên người đánh giá không được vượt quá 100 ký tự")

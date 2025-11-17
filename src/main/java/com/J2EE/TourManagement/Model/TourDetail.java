@@ -51,16 +51,13 @@ public class TourDetail {
   @Column(updatable = false, name = "createdAt")
   private LocalDateTime createdAt;
 
+  @Column(name = "updatedAt")
+  private LocalDateTime updatedAt;
+
   @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
              orphanRemoval = true, fetch = FetchType.EAGER)
   @JsonManagedReference(value = "detail-price")
   private List<TourPrice> tourPrices;
-
-  // Quan hệ 1 TourDetail có nhiều Review
-  @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
-             orphanRemoval = true, fetch = FetchType.EAGER)
-  @JsonManagedReference(value = "detail-review")
-  private List<Review> reviews;
 
   // Quan hệ 1 TourDetail có 1 Itinerary
   @OneToOne(mappedBy = "tourDetail", cascade = CascadeType.ALL,

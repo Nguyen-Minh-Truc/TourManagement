@@ -21,9 +21,9 @@ public class Review {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tour_detail_id")
+    @JoinColumn(name = "tour_id")
     @JsonBackReference(value = "detail-review")
-    private TourDetail tourDetail;
+    private Tour tour;
 
     @NotBlank(message = "Tên người đánh giá không được để trống")
     @Size(max = 100, message = "Tên người đánh giá không được vượt quá 100 ký tự")

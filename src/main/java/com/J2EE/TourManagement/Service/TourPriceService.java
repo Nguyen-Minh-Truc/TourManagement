@@ -12,6 +12,7 @@ import com.J2EE.TourManagement.Util.error.InvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,17 +28,20 @@ public class TourPriceService {
     //Create
     public TourPrice handleSave(TourPriceCreateDTO dto)
             throws InvalidException {
-        if (!tourPriceRepository.existsById(dto.getTourDetailId())) {
-            throw new InvalidException(
-                    "Không tìm thấy TourDetail Id để thêm (id = " + dto.getTourDetailId() + ")");
-        }
-
         TourPrice reponse = tourPriceMapper.toEntity(dto);
+
+        // Gán tourDetail id cho price
+        if (dto.getTourDetailId() != null) {
+            TourDetail detail = tourDetailRepository.findById(dto.getTourDetailId())
+                    .orElseThrow(() -> new InvalidException(
+                            "Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
+            reponse.setTourDetail(detail);
+        }
 
         return tourPriceRepository.save(reponse);
     }
 
-    //Read by TourPrice id
+    //Read by TourDetail id
     public List<TourPriceDTO> handleGetAll(Long id) throws InvalidException {
         Optional<TourDetail> opt = tourDetailRepository.findById(id);
 
@@ -59,7 +63,30 @@ public class TourPriceService {
         // Map dữ liệu từ DTO sang entity có sẵn
         tourPriceMapper.updateEntityFromDto(dto, existing);
 
+        // Gán tourDetail id cho price
+        if (dto.getTourDetailId() != null) {
+            TourDetail detail = tourDetailRepository.findById(dto.getTourDetailId())
+                    .orElseThrow(() -> new InvalidException(
+                            "Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
+            existing.setTourDetail(detail);
+        }
+
         return tourPriceRepository.save(existing);
+    }
+
+    // Delete
+    public void handleDelete(Long id)
+            throws InvalidException {
+        TourPrice existing = tourPriceRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Không  tìm thấy TourPrice với id = " + id));
+
+        // Gỡ TourPrice khỏi danh sách trong TourDetail
+        TourDetail detail = existing.getTourDetail();
+        if (detail != null && detail.getTourPrices() != null) {
+            detail.getTourPrices().remove(existing);
+        }
+
+        tourPriceRepository.delete(existing);
     }
 
     public TourPrice getTourPriceById(long id) {

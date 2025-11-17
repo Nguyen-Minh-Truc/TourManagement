@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class TourPriceCreateDTO {
     @NotNull(message = "TourDetail id không được để trống.")
-    private long tourDetailId;
+    private Long tourDetailId;
 
     @NotBlank(message = "Loại giá không được để trống")
     @Pattern(regexp = "ADULT|CHILD|INFANT|GROUP", message = "Loại giá phải là ADULT, CHILD, INFANT hoặc GROUP")

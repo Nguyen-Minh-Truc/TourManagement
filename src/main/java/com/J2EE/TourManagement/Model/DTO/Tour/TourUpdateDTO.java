@@ -1,7 +1,6 @@
 package com.J2EE.TourManagement.Model.DTO.Tour;
 
 import jakarta.validation.constraints.*;
-import jdk.jfr.SettingDefinition;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TourUpdateDTO {
-    @NotBlank(message = "Tiêu đề không được để trống")
     @Size(max = 255, message = "Tiêu đề không được vượt quá 255 ký tự")
     private String title;
 
@@ -24,11 +22,9 @@ public class TourUpdateDTO {
     @Pattern(regexp = "^\\d+ ngày \\d+ đêm$", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
     private String duration;
 
-    @NotNull(message = "Vui lòng nhập sức chứa")
     @Positive(message = "Sức chứa phải lớn hơn 0")
     private Integer capacity;
 
-    @NotBlank(message = "Điểm đến không được để trống")
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
     private String location;
 
