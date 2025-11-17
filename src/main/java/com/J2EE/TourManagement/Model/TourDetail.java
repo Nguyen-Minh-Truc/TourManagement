@@ -1,10 +1,10 @@
 package com.J2EE.TourManagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,12 +34,14 @@ public class TourDetail {
 
   @Column(name = "startDay")
   @NotNull(message = "Ngày bắt đầu không được để trống")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDate startDay;
 
   @Column(name = "endDay")
   @NotNull(message = "Ngày kết thúc không được để trống")
   @FutureOrPresent(message =
                        "Ngày kết thúc phải là hiện tại hoặc trong tương lai")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDate endDay;
 
   @NotBlank(message = "Trạng thái không được để trống")
@@ -49,9 +51,11 @@ public class TourDetail {
   private String status;
 
   @Column(updatable = false, name = "createdAt")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDateTime createdAt;
 
   @Column(name = "updatedAt")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDateTime updatedAt;
 
   @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,

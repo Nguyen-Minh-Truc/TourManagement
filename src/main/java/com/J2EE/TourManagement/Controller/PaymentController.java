@@ -47,6 +47,7 @@ public class PaymentController {
   public ResponseEntity<Payment>
   postMethodName(@RequestBody @Valid PaymentDTO paymentDTO)
       throws InvalidException {
+        
     return ResponseEntity.ok().body(
         this.paymentSer.createPaymentCash(paymentDTO));
   }
