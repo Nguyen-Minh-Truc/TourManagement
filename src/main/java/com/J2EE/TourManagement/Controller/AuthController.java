@@ -245,7 +245,6 @@ public class AuthController {
     User currentUser =
         this.userService.getUserByName(principal.getAttribute("email"));
     if (currentUser == null) {
-      // Nếu chưa có user, bạn có thể tạo mới
       currentUser = this.userService.createUserFromGoogle(principal);
     }
 

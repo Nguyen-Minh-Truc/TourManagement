@@ -46,7 +46,7 @@ public SecurityFilterChain filterChain(HttpSecurity http,
             .anyRequest().authenticated()
         )
         .oauth2Login(oauth2 -> oauth2
-            .defaultSuccessUrl("/api/v1/login/oauth2/success", true)
+            .defaultSuccessUrl("http://localhost:5173/sign-in?oauth=success", true)
         )
         .oauth2ResourceServer(oauth2 -> oauth2
             .jwt(Customizer.withDefaults())
