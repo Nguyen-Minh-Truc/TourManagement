@@ -18,8 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -233,4 +235,51 @@ public class AuthController {
     CreateUserDTO resUserDTO = this.userService.convertUserToResUserDto(user);
     return ResponseEntity.ok(resUserDTO);
   }
+
+  @GetMapping("/login/oauth2/success")
+  public ResponseEntity<ResLoginDTO>
+  googleLoginSuccess(@AuthenticationPrincipal OAuth2User principal) {
+    ResLoginDTO resLoginDTO = new ResLoginDTO();
+
+    // Giả sử bạn tìm user trong DB bằng email Google
+    User currentUser =
+        this.userService.getUserByName(principal.getAttribute("email"));
+    if (currentUser == null) {
+      // Nếu chưa có user, bạn có thể tạo mới
+      currentUser = this.userService.createUserFromGoogle(principal);
+    }
+
+    RoleDTO roleDTO = new RoleDTO(currentUser.getRole().getId(),
+                                  currentUser.getRole().getNameRole(),
+                                  currentUser.getRole().getDescription(),
+                                  currentUser.getRole().isStatus());
+
+    ResLoginDTO.UserLogin userLogin =
+        new ResLoginDTO.UserLogin(currentUser.getId(), currentUser.getEmail(),
+                                  currentUser.getFullname(), roleDTO);
+
+    String accessToken =
+        this.securityUtil.createAccessToken(currentUser.getEmail(), userLogin);
+    resLoginDTO.setAccessToken(accessToken);
+    resLoginDTO.setUserLogin(userLogin);
+
+    // refresh token nếu cần
+    String refreshToken = this.securityUtil.createRefreshToken(
+        currentUser.getEmail(), resLoginDTO);
+    this.userService.UpdateRefreshToken(refreshToken, currentUser.getEmail());
+
+    ResponseCookie responseCookie =
+        ResponseCookie.from("refresh_Token", refreshToken)
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(refreshTokenExpiration)
+            .build();
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+        .body(resLoginDTO);
+  }
+
+  
 }
