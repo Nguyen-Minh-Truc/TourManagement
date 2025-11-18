@@ -23,7 +23,7 @@ public class TourDTO {
     private Integer capacity;
     private String location;
     private String status;
-    private String imageUrl;
+    private String img;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;

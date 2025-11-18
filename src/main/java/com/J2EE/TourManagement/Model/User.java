@@ -6,32 +6,28 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.turkraft.springfilter.helper.IgnoreExists;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
 
   @Column(name = "fullname")
   @NotBlank(message = "Tên người dùng không được để trống.")
   private String fullname;
-    @Column(name = "email", unique = true)
+  @Column(name = "email", unique = true)
   @NotBlank(message = "Email người dùng không được để trống.")
   private String email;
   @NotBlank(message = "Mật khẩu người dùng không được để trống.")
   private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "id_role", nullable = false)
-    private Role role;
-
+  @ManyToOne @JoinColumn(name = "id_role", nullable = false) private Role role;
 
   private boolean status;
 
@@ -47,7 +43,11 @@ public class User {
   @JsonManagedReference("user-booking")
   private List<Booking> bookings;
 
-    public long getId() { return this.id; }
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  @JsonManagedReference("user-userVoucher")
+  private List<UserVoucher> userVouchers;
+
+  public long getId() { return this.id; }
 
   public void setId(long id) { this.id = id; }
 
@@ -62,7 +62,6 @@ public class User {
   public String getPassword() { return this.password; }
 
   public void setPassword(String password) { this.password = password; }
-
 
   public boolean isStatus() { return this.status; }
 
@@ -88,6 +87,11 @@ public class User {
 
   public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
 
+  public List<UserVoucher> getUserVouchers() { return this.userVouchers; }
+  public void setUserVouchers(List<UserVoucher> userVouchers) {
+    this.userVouchers = userVouchers;
+  }
+
   @PrePersist
   public void handleBeforeCreate() {
     this.createdAt = Instant.now();
@@ -98,10 +102,6 @@ public class User {
     this.updatedAt = Instant.now();
   }
 
-    public Role getRole() {
-        return role;
-    }
-    public void setRole(Role role) {
-        this.role = role;
-    }
+  public Role getRole() { return role; }
+  public void setRole(Role role) { this.role = role; }
 }
