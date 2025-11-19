@@ -12,6 +12,7 @@ public class BookingResponseDTO {
   private long userId;
   private double totalPrice;
   private String note;
+  private String orderCode;
   private EnumStatusBooking status;
   private String contactEmail;
   private String contactPhone;
@@ -28,6 +29,7 @@ public class BookingResponseDTO {
     this.userId = booking.getUser().getId();
     this.totalPrice = booking.getTotalPrice();
     this.note = booking.getNote();
+    this.orderCode = booking.getOrderCode();
     this.status = booking.getStatus();
     this.contactEmail = booking.getContactEmail();
     this.contactPhone = booking.getContactPhone();
@@ -95,4 +97,12 @@ public class BookingResponseDTO {
   public void setBookingDetails(List<BookingDetail> bookingDetails) {
     this.bookingDetails = bookingDetails;
   }
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
 }

@@ -1,6 +1,7 @@
 package com.J2EE.TourManagement.Model;
 
 import com.J2EE.TourManagement.Util.constan.EnumStatusPayment;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -15,12 +16,10 @@ public class Payment {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
-  // Khóa ngoại tới Booking
-  @ManyToOne
-  @JoinColumn(name = "id_booking", nullable = false)
-   @JsonManagedReference
-  private Booking booking;
-
+    @OneToOne
+    @JoinColumn(name = "id_booking")
+    @JsonBackReference
+    private Booking booking;
 
   private double amount;
   private String method;

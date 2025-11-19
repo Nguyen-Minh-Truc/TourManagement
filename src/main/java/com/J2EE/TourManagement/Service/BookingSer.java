@@ -51,6 +51,7 @@ public class BookingSer {
     booking.setStatus(bookingDTO.getStatus());
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
+    booking.setOrderCode(bookingDTO.getOrderCode());
     booking.setContactFullname(bookingDTO.getContactFullname());
     booking.setContactAddress(bookingDTO.getContactAddress());
     booking.setStatus(EnumStatusBooking.PENDING);
