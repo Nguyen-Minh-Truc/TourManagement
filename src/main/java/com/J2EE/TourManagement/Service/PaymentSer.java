@@ -65,6 +65,12 @@ public class PaymentSer {
     return Payment;
   }
 
+  public Payment getPaymentByBookingId(long bookingId) throws InvalidException {
+      Payment payment = this.paymentRep.findByBookingId(bookingId)
+              .orElseThrow(() -> new InvalidException("Không tìm thấy payment cho bookingId: " + bookingId));
+      return payment;
+  }
+
   public boolean isIdExist(long id) { return this.paymentRep.existsById(id); }
 
   public String createVNPayPayment(long bookingId)

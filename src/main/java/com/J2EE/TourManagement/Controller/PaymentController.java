@@ -37,9 +37,11 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private final PaymentOrderService orderService;
+    private final PaymentSer paymentSer;
 
-    public PaymentController(PaymentOrderService orderService) {
+    public PaymentController(PaymentOrderService orderService, PaymentSer paymentSer) {
         this.orderService = orderService;
+        this.paymentSer = paymentSer;
     }
 
     @PostMapping("/create")
@@ -54,6 +56,12 @@ public class PaymentController {
         res.put("orderCode", order.getOrderCode());
 
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/booking/{idBooking}")
+    public ResponseEntity<?> getPaymentByBookingId(@PathVariable Long idBooking) throws InvalidException {
+        Payment payment = paymentSer.getPaymentByBookingId(idBooking);
+        return ResponseEntity.ok(payment);
     }
 
 
@@ -71,14 +79,18 @@ public class PaymentController {
 
         try {
             if (!"00".equals(responseCode)) {
-                redirectUrl = "http://localhost:5173/payment/vnpay_return?status=fail";
+                redirectUrl = "http://localhost:5173/payment/vnpay_return?status=fail&orderCode=" + orderCode;
             } else {
                 Payment payment = orderService.processVNPaySuccess(orderCode);
-                redirectUrl = "http://localhost:5173/payment/vnpay_return?status=success";
+                long bookingId = payment.getBooking().getId();
+                redirectUrl = "http://localhost:5173/payment/vnpay_return?status=success"
+                        + "&bookingId=" + bookingId
+                        + "&orderCode=" + orderCode;
             }
 
         } catch (Exception e) {
-            redirectUrl = "http://localhost:5173/payment/vnpay_return?status=error";
+            e.printStackTrace();
+            redirectUrl = "http://localhost:5173/payment/vnpay_return?status=fail&orderCode=" + orderCode;
         }
 
         response.sendRedirect(redirectUrl);
