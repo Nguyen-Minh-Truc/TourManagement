@@ -13,61 +13,103 @@ import java.time.Instant;
 @Table(name = "payment")
 public class Payment {
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  // Khóa ngoại tới Booking
-  @ManyToOne
-  @JoinColumn(name = "id_booking", nullable = false)
-   @JsonManagedReference
-  private Booking booking;
+    // Khóa ngoại tới Booking
+    @ManyToOne
+    @JoinColumn(name = "id_booking", nullable = false)
+    @JsonManagedReference
+    private Booking booking;
+
+    private double amount;
+
+    private String method;
+    private double discounted;
+
+    @Enumerated(EnumType.STRING)
+    private EnumStatusPayment status;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
+    private Instant createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
+    private Instant updatedAt;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Booking getBooking() {
+        return this.booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public double getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public String getMethod() {
+        return this.method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public EnumStatusPayment getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(EnumStatusPayment status) {
+        this.status = status;
+    }
+
+    public Instant getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 
 
-  private double amount;
-  private String method;
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
+    }
 
-  @Enumerated(EnumType.STRING) private EnumStatusPayment status;
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
-  private Instant createdAt;
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdAt = Instant.now();
+    }
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
-  private Instant updatedAt;
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
-  public Long getId() { return this.id; }
+    public double getDiscounted() {
+        return discounted;
+    }
 
-  public void setId(Long id) { this.id = id; }
+    public void setDiscounted(double discounted) {
+        this.discounted = discounted;
+    }
 
-  public Booking getBooking() { return this.booking; }
-
-  public void setBooking(Booking booking) { this.booking = booking; }
-
-  public double getAmount() { return this.amount; }
-
-  public void setAmount(double amount) { this.amount = amount; }
-
-  public String getMethod() { return this.method; }
-
-  public void setMethod(String method) { this.method = method; }
-
-  public EnumStatusPayment getStatus() { return this.status; }
-
-  public void setStatus(EnumStatusPayment status) { this.status = status; }
-
-  public Instant getCreatedAt() { return this.createdAt; }
-public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
-
-
-  public Instant getUpdatedAt() { return this.updatedAt; }
-
-  public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
-
-  @PrePersist
-  public void handleBeforeCreate() {
-    this.createdAt = Instant.now();
-  }
-
-  @PreUpdate
-  public void handleBeforeUpdate() {
-    this.updatedAt = Instant.now();
-  }
 }

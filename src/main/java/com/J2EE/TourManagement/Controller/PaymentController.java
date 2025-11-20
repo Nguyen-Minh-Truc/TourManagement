@@ -137,20 +137,15 @@ public class PaymentController {
     }
 
     @PostMapping("/payment/cash/voucher")
+    @ApiMessage("Thanh toán thành công!")
     public ResponseEntity<?> createPaymentWithVoucher(@Valid @RequestBody PaymentDTO paymentDTO)
             throws InvalidException {
-        try {
-            Payment payment = paymentSer.createPaymentWithVoucher(
-                    paymentDTO.getId_booking(),
-                    paymentDTO.getUserVoucherId(),
-                    "Cash"
-            );
-            return ResponseEntity.ok(payment);
-        } catch (InvalidException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Lỗi khi tạo payment: " + e.getMessage());
-        }
+        Payment payment = paymentSer.createPaymentWithVoucher(
+                paymentDTO.getId_booking(),
+                paymentDTO.getUserVoucherId(),
+                "Cash"
+        );
+        return ResponseEntity.ok(payment);
     }
 
     @PostMapping("/payment/vnpay/voucher")

@@ -208,7 +208,6 @@ public class PaymentSer {
         // Cập nhật booking
         booking.setStatus(EnumStatusBooking.COMPLETED);
         booking.setPayment(payment);
-        bookingRep.save(booking);
 
         return paymentRep.save(payment);
     }
