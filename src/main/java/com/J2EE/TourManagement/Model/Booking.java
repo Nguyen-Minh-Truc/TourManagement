@@ -38,7 +38,6 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "user_voucher_id")
-    @JsonBackReference
     private UserVoucher userVoucher;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "#,###.##")

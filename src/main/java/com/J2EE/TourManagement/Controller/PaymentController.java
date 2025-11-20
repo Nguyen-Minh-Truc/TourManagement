@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -100,7 +101,7 @@ public class PaymentController {
                 if (booking.getUserVoucher() != null) {
                     UserVoucher uv = booking.getUserVoucher();
                     uv.setIsUsed(true);
-                    uv.setUsedDate(Instant.now());
+                    uv.setUsedDate(LocalDateTime.now());
                     paymentSer.markVoucherUsed(uv);
                 }
 
@@ -142,7 +143,7 @@ public class PaymentController {
             Payment payment = paymentSer.createPaymentWithVoucher(
                     paymentDTO.getId_booking(),
                     paymentDTO.getUserVoucherId(),
-                    "CASH" // hoặc "VNPAY" tùy nhu cầu
+                    "Cash"
             );
             return ResponseEntity.ok(payment);
         } catch (InvalidException e) {

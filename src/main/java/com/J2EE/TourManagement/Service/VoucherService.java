@@ -142,19 +142,21 @@ public class VoucherService {
     }
 
     public UserVoucher assignVoucherToUser(User user, Voucher voucher) {
-        // Kiểm tra user đã có voucher chưa
-        boolean exists = userVoucherRepo.existsByUserIdAndVoucherId(
-                user.getId(), voucher.getId());
-        if (exists)
-            throw new RuntimeException("User đã được cấp voucher này");
 
-        // Tạo UserVoucher mới
+        // Check số lượng voucher (nếu có giới hạn)
+        if (voucher.getQuantity() != null && voucher.getQuantity() <= 0) {
+            throw new RuntimeException("Voucher đã hết số lượng");
+        }
+
+        // Tạo UserVoucher mới không kiểm tra trùng lặp
         UserVoucher uv = new UserVoucher();
         uv.setUser(user);
         uv.setVoucher(voucher);
         uv.setIsUsed(false);
-        uv.setUniqueCode(voucher.getCode() + "-" + user.getId() + "-" +
-                System.currentTimeMillis());
+
+        uv.setUniqueCode(
+                voucher.getCode() + "-" + user.getId() + "-" + System.currentTimeMillis()
+        );
 
         // Giảm số lượng voucher nếu giới hạn
         if (voucher.getQuantity() != null && voucher.getQuantity() > 0) {
@@ -187,40 +189,8 @@ public class VoucherService {
             throw new RuntimeException("Voucher chưa đến hạn hoặc đã hết hạn");
 
         uv.setIsUsed(true);
-        uv.setUsedDate(Instant.now());
+        uv.setUsedDate(LocalDateTime.now());
         userVoucherRepo.save(uv);
     }
 
-    @Transactional
-    public double applyVoucherToPayment(Long bookingId, Long userVoucherId) {
-        Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking không tồn tại"));
-
-        UserVoucher uv = userVoucherRepo.findById(userVoucherId)
-                .orElseThrow(() -> new RuntimeException("UserVoucher không tồn tại"));
-
-        // Kiểm tra voucher đã sử dụng chưa
-        if (uv.getIsUsed() != null && uv.getIsUsed()) {
-            throw new RuntimeException("Voucher đã được sử dụng");
-        }
-
-        // Kiểm tra thời gian hiệu lực
-        LocalDateTime now = LocalDateTime.now();
-        if (uv.getVoucher().getStartDate().isAfter(now) || uv.getVoucher().getEndDate().isBefore(now)) {
-            throw new RuntimeException("Voucher chưa đến hạn hoặc đã hết hạn");
-        }
-
-        double totalPrice = booking.getTotalPrice();
-        double discount = uv.calculateDiscount(totalPrice);
-
-        // Gán voucher vào booking
-        booking.setUserVoucher(uv);
-
-        // Đánh dấu voucher đã dùng
-        uv.setIsUsed(true);
-        uv.setUsedDate(Instant.now());
-        userVoucherRepo.save(uv);
-
-        return discount; // Bạn có thể sử dụng giá trị này để giảm payment.amount
-    }
 }

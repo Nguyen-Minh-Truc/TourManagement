@@ -198,7 +198,7 @@ public class PaymentSer {
 
             // Đánh dấu voucher đã dùng
             uv.setIsUsed(true);
-            uv.setUsedDate(Instant.now());
+            uv.setUsedDate(LocalDateTime.now());
             userVoucherRepo.save(uv);
         }
 
