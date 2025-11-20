@@ -17,7 +17,8 @@ import lombok.Setter;
 @EndDateAfterStartDate
 public class VoucherDTO {
 
-  @NotBlank(message = "Code không được để trống") private String code;
+  @NotBlank(message = "Code không được để trống")
+  private String code;
 
   @NotBlank(message = "Description không được để trống")
   private String description;

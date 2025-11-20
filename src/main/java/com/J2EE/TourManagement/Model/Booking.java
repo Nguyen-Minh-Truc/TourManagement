@@ -19,6 +19,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -26,112 +27,170 @@ import java.util.List;
 @Table(name = "bookings")
 
 public class Booking {
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id_user", nullable = false)
-  @JsonBackReference("user-booking")
-  private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", nullable = false)
+    @JsonBackReference("user-booking")
+    private User user;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "#,###.##")
-  private double totalPrice;
+    @ManyToOne
+    @JoinColumn(name = "user_voucher_id")
+    @JsonBackReference
+    private UserVoucher userVoucher;
 
-  private String note;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "#,###.##")
+    private double totalPrice;
 
-  @Enumerated(EnumType.STRING) private EnumStatusBooking status;
+    private String note;
 
-  private String contactEmail;
+    @Enumerated(EnumType.STRING)
+    private EnumStatusBooking status;
 
-  private String contactFullname;
+    private String contactEmail;
 
-  private String contactAddress;
+    private String contactFullname;
 
-  private String contactPhone;
+    private String contactAddress;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
-  private Instant createdAt;
+    private String contactPhone;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
-  private Instant updatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
+    private Instant createdAt;
 
-  @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
-  @JsonBackReference
-  private Payment payment;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
+    private Instant updatedAt;
 
-  @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,
-             orphanRemoval = true)
-  @JsonManagedReference
-  private List<BookingDetail> bookingDetails;
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Payment payment;
 
-  public long getId() { return this.id; }
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JsonManagedReference
+    private List<BookingDetail> bookingDetails;
 
-  public void setId(long id) { this.id = id; }
+    public long getId() {
+        return this.id;
+    }
 
-  public User getUser() { return this.user; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public void setUser(User user) { this.user = user; }
+    public User getUser() {
+        return this.user;
+    }
 
-  public Double getTotalPrice() { return this.totalPrice; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-  public void setTotalPrice(Double totalPrice) { this.totalPrice = totalPrice; }
+    public Double getTotalPrice() {
+        return this.totalPrice;
+    }
 
-  public String getNote() { return this.note; }
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
-  public void setNote(String note) { this.note = note; }
+    public String getNote() {
+        return this.note;
+    }
 
-  public EnumStatusBooking getStatus() { return this.status; }
+    public void setNote(String note) {
+        this.note = note;
+    }
 
-  public void setStatus(EnumStatusBooking status) { this.status = status; }
+    public EnumStatusBooking getStatus() {
+        return this.status;
+    }
 
-  public String getContactEmail() { return this.contactEmail; }
+    public void setStatus(EnumStatusBooking status) {
+        this.status = status;
+    }
 
-  public void setContactEmail(String contactEmail) {
-    this.contactEmail = contactEmail;
-  }
+    public String getContactEmail() {
+        return this.contactEmail;
+    }
 
-  public String getContactPhone() { return this.contactPhone; }
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
 
-  public void setContactPhone(String contactPhone) {
-    this.contactPhone = contactPhone;
-  }
+    public String getContactPhone() {
+        return this.contactPhone;
+    }
 
-  public String getContactFullname() { return this.contactFullname; }
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
 
-  public void setContactFullname(String contactFullname) {
-    this.contactFullname = contactFullname;
-  }
+    public String getContactFullname() {
+        return this.contactFullname;
+    }
 
-  public String getContactAddress() { return this.contactAddress; }
+    public void setContactFullname(String contactFullname) {
+        this.contactFullname = contactFullname;
+    }
 
-  public void setContactAddress(String contactAddress) {
-    this.contactAddress = contactAddress;
-  }
+    public String getContactAddress() {
+        return this.contactAddress;
+    }
 
-  public Instant getCreatedAt() { return this.createdAt; }
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
+    }
 
-  public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public Instant getCreatedAt() {
+        return this.createdAt;
+    }
 
-  public Instant getUpdatedAt() { return this.updatedAt; }
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 
-  public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
+    }
 
-  public Payment getPayment() { return this.payment; }
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-  public void setPayment(Payment payment) { this.payment = payment; }
+    public Payment getPayment() {
+        return this.payment;
+    }
 
-  public List<BookingDetail> getBookingDetails() { return this.bookingDetails; }
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
 
-  public void setBookingDetails(List<BookingDetail> bookingDetails) {
-    this.bookingDetails = bookingDetails;
-  }
+    public List<BookingDetail> getBookingDetails() {
+        return this.bookingDetails;
+    }
 
-  @PrePersist
-  public void handleBeforeCreate() {
-    this.createdAt = Instant.now();
-  }
+    public UserVoucher getUserVoucher() {
+        return userVoucher;
+    }
 
-  @PreUpdate
-  public void handleBeforeUpdate() {
-    this.updatedAt = Instant.now();
-  }
+    public void setUserVoucher(UserVoucher userVoucher) {
+        this.userVoucher = userVoucher;
+    }
+
+    public void setBookingDetails(List<BookingDetail> bookingDetails) {
+        this.bookingDetails = bookingDetails;
+    }
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }
