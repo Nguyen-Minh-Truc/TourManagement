@@ -38,10 +38,12 @@ public class PaymentController {
 
     private final PaymentOrderService orderService;
     private final PaymentSer paymentSer;
+    private final BookingSer bookingService;
 
-    public PaymentController(PaymentOrderService orderService, PaymentSer paymentSer) {
+    public PaymentController(PaymentOrderService orderService, PaymentSer paymentSer, BookingSer bookingService) {
         this.orderService = orderService;
         this.paymentSer = paymentSer;
+        this.bookingService = bookingService;
     }
 
     @PostMapping("/create")
@@ -74,11 +76,14 @@ public class PaymentController {
 
         String responseCode = params.get("vnp_ResponseCode");
         String orderCode = params.get("vnp_TxnRef");
+        String orderInfo = params.get("vnp_OrderInfo");
 
         String redirectUrl;
 
         try {
             if (!"00".equals(responseCode)) {
+                long bookingId = extractBookingId(orderInfo);
+                bookingService.cancelBookingAndRollbackStock(bookingId);
                 redirectUrl = "http://localhost:5173/payment/vnpay_return?status=fail&orderCode=" + orderCode;
             } else {
                 Payment payment = orderService.processVNPaySuccess(orderCode);
@@ -94,6 +99,14 @@ public class PaymentController {
         }
 
         response.sendRedirect(redirectUrl);
+    }
+
+    private long extractBookingId(String orderInfo) {
+        try {
+            return Long.parseLong(orderInfo.replaceAll("[^0-9]", ""));
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể lấy ID từ orderInfo: " + orderInfo);
+        }
     }
 }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.List;
@@ -40,6 +41,11 @@ public class Booking {
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant updatedAt;
+
+  @Column(name = "expiredAt", nullable = false)
+  @NotNull(message = "Thời gian hết hạn không được để trống")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
+  private Instant expiredAt;
 
   @Column(name = "orderCode")
   private String orderCode;
@@ -118,6 +124,14 @@ public class Booking {
   public void setBookingDetails(List<BookingDetail> bookingDetails) {
     this.bookingDetails = bookingDetails;
   }
+
+    public Instant getExpiredAt() {
+        return expiredAt;
+    }
+
+    public void setExpiredAt(Instant expiredAt) {
+        expiredAt = expiredAt;
+    }
 
   @PrePersist
   public void handleBeforeCreate() {
