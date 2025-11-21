@@ -25,12 +25,13 @@ public class Tour {
     @Size(max = 255, message = "Tiêu đề không được vượt quá 255 ký tự")
     private String title;
 
-    @Column(name = "imgUrl")
-    private String imgUrl;
 
+    @Column(length = 500)
     @Size(max = 500, message = "Mô tả ngắn không được vượt quá 500 ký tự")
     private String shortDesc;
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String longDesc;
 
     @Pattern(regexp = "\\d+\\s*ngày\\s*\\d+\\s*đêm", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")

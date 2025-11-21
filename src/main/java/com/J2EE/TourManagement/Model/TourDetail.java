@@ -74,10 +74,10 @@ public class TourDetail {
   private List<TourPrice> tourPrices;
 
   // Quan hệ 1 TourDetail có 1 Itinerary
-  @OneToOne(mappedBy = "tourDetail", cascade = CascadeType.ALL,
+  @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonManagedReference(value = "detail-itinerary")
-  private TourItinerary itinerary;
+  private List<TourItinerary> itineraries;
 
   @PrePersist
   protected void onCreate() {

@@ -25,17 +25,13 @@ public class TourItineraryService {
     private final TourDetailRepository tourDetailRepository;
 
     //Create
-    public TourItinerary handleSave(TourItineraryCreateDTO dto)
-            throws InvalidException {
+    public TourItinerary handleSave(TourItineraryCreateDTO dto) throws InvalidException {
+        // 1. Tìm TourDetail cha
         TourDetail tourDetail = tourDetailRepository.findById(dto.getTourDetailId())
                 .orElseThrow(() -> new InvalidException("Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
 
-        if (tourDetail.getItinerary() != null)
-        {
-            throw new InvalidException("Lộ trình tour đã tồn tại.");
-        }
-
         TourItinerary itinerary = tourItineraryMapper.toEntity(dto);
+
         itinerary.setTourDetail(tourDetail);
 
         return tourItineraryRepository.save(itinerary);
@@ -44,29 +40,25 @@ public class TourItineraryService {
     //Read all
     public ResultPaginationDTO handleGetAll(Specification<TourItinerary> spec, Pageable pageable) {
         Page<TourItinerary> tourItineraries = tourItineraryRepository.findAll(spec, pageable);
-
         Page<TourItineraryDTO> dtoPage = tourItineraries.map(tourItineraryMapper::toResponseDTO);
-
         return PaginationUtils.build(dtoPage, pageable);
     }
 
     //Update
-    public TourItinerary handleUpdate (Long id, TourItineraryUpdateDTO dto) throws InvalidException {
+    public TourItinerary handleUpdate(Long id, TourItineraryUpdateDTO dto) throws InvalidException {
         TourItinerary existing = tourItineraryRepository.findById(id)
                 .orElseThrow(() -> new InvalidException("Không tìm thấy TourItinerary để cập nhật (id = " + id + ")"));
 
-        // Map du lieu tu DTO sang entity
+        // 1. Map dữ liệu mới vào entity cũ
         tourItineraryMapper.updateEntityFromDTO(dto, existing);
 
-        // Gán tourDetail id cho Itinerary
+        // 2. Nếu có thay đổi Tour cha (chuyển lộ trình này sang tour khác)
         if (dto.getTourDetailId() != null) {
             TourDetail detail = tourDetailRepository.findById(dto.getTourDetailId())
                     .orElseThrow(() -> new InvalidException(
                             "Không tìm thấy TourDetail với id = " + dto.getTourDetailId()));
-            if (detail.getItinerary() != null && detail.getItinerary().getId() != id)
-            {
-                throw new InvalidException("TourDetail id = " + dto.getTourDetailId() +" đã có lộ trình tour rồi!");
-            }
+
+
             existing.setTourDetail(detail);
         }
 
@@ -74,16 +66,10 @@ public class TourItineraryService {
     }
 
     // Delete
-    public void handleDelete(Long id)
-            throws InvalidException {
-        TourItinerary existing = tourItineraryRepository.findById(id)
-                .orElseThrow(() -> new InvalidException("Không  tìm thấy TourItinerary với id = " + id));
-
-        TourDetail detail = existing.getTourDetail();
-        if (detail != null) {
-            detail.setItinerary(null);
+    public void handleDelete(Long id) throws InvalidException {
+        if (!tourItineraryRepository.existsById(id)) {
+            throw new InvalidException("Không tìm thấy TourItinerary với id = " + id);
         }
-
-        tourItineraryRepository.delete(existing);
+        tourItineraryRepository.deleteById(id);
     }
 }

@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.6"
+    id("org.springframework.boot") version "3.5.7"  // Update lên latest 3.x stable
     id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.lombok") version "8.6"
 }
@@ -22,13 +22,16 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 extra["springAiVersion"] = "1.1.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-//    implementation("org.springframework.ai:spring-ai-advisors-vector-store")
+    implementation("org.springframework.ai:spring-ai-advisors-vector-store")
+    implementation("org.springframework.ai:spring-ai-vector-store:1.1.0")
     implementation("org.springframework.ai:spring-ai-starter-model-ollama")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -64,7 +67,6 @@ dependencies {
 }
 
 springBoot {
-
     mainClass.set("com.J2EE.TourManagement.TourManagementApplication")
 }
 
@@ -73,7 +75,6 @@ dependencyManagement {
         mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
     }
 }
-
 
 tasks.withType<Test> {
     useJUnitPlatform()
