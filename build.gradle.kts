@@ -1,5 +1,3 @@
-
-
 plugins {
     java
     id("org.springframework.boot") version "3.5.6"
@@ -29,6 +27,7 @@ repositories {
 extra["springAiVersion"] = "1.1.0"
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 //    implementation("org.springframework.ai:spring-ai-advisors-vector-store")
     implementation("org.springframework.ai:spring-ai-starter-model-ollama")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -60,6 +59,7 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
+
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 

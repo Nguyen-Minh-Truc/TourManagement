@@ -22,9 +22,6 @@ public class TourUpdateDTO {
     @Pattern(regexp = "^\\d+ ngày \\d+ đêm$", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
     private String duration;
 
-    @Positive(message = "Sức chứa phải lớn hơn 0")
-    private Integer capacity;
-
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
     private String location;
 

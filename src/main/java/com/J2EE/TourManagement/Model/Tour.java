@@ -36,10 +36,6 @@ public class Tour {
     @Pattern(regexp = "\\d+\\s*ngày\\s*\\d+\\s*đêm", message = "Thời lượng phải đúng định dạng: 'X ngày Y đêm'")
     private String duration;
 
-    @NotNull(message = "Vui lòng nhập sức chứa")
-    @Positive(message = "Sức chứa phải lớn hơn 0")
-    private Integer capacity;
-
     @NotBlank(message = "Điểm đến không được để trống")
     @Size(max = 255, message = "Điểm đến không được vượt quá 255 ký tự")
     private String location;
@@ -52,7 +48,6 @@ public class Tour {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
     @Column(name = "rating")
     private Double rating;
 

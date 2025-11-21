@@ -1,10 +1,10 @@
 package com.J2EE.TourManagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,13 +34,25 @@ public class TourDetail {
 
   @Column(name = "startDay")
   @NotNull(message = "Ngày bắt đầu không được để trống")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDate startDay;
 
   @Column(name = "endDay")
   @NotNull(message = "Ngày kết thúc không được để trống")
   @FutureOrPresent(message =
                        "Ngày kết thúc phải là hiện tại hoặc trong tương lai")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDate endDay;
+
+  @Column(name = "capacity")
+  @NotNull(message = "Tổng số chỗ không được để trống")
+  @Min(value = 0, message = "Tổng số chỗ không được âm")
+  private Integer capacity;
+
+  @Column(name = "remainingSeats")
+  @NotNull(message = "Số chỗ còn lại không được để trống")
+  @Min(value = 0, message = "Số chỗ còn lại không được âm")
+  private Integer remainingSeats;
 
   @NotBlank(message = "Trạng thái không được để trống")
   @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT",
@@ -49,9 +61,11 @@ public class TourDetail {
   private String status;
 
   @Column(updatable = false, name = "createdAt")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDateTime createdAt;
 
   @Column(name = "updatedAt")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDateTime updatedAt;
 
   @OneToMany(mappedBy = "tourDetail", cascade = CascadeType.ALL,
@@ -69,5 +83,8 @@ public class TourDetail {
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
     this.status = (this.status == null) ? "DRAFT" : this.status;
+      if (this.remainingSeats == null && this.capacity != null) {
+          this.remainingSeats = this.capacity;
+      }
   }
 }

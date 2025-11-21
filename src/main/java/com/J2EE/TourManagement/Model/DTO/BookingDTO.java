@@ -11,6 +11,7 @@ public class BookingDTO {
 
   private long userId;
   private String note;
+  private String orderCode;
 
   @Enumerated(EnumType.STRING) private EnumStatusBooking status;
 
@@ -70,4 +71,11 @@ public class BookingDTO {
   public void setBookingDetails(List<BookingDetailDTO> bookingDetails) {
     this.bookingDetails = bookingDetails;
   }
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
 }

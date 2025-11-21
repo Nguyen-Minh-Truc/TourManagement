@@ -3,6 +3,7 @@ package com.J2EE.TourManagement.Model.DTO;
 import com.J2EE.TourManagement.Model.Booking;
 import com.J2EE.TourManagement.Model.BookingDetail;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
 import java.util.List;
 
@@ -11,12 +12,15 @@ public class BookingResponseDTO {
   private long userId;
   private double totalPrice;
   private String note;
+  private String orderCode;
   private EnumStatusBooking status;
   private String contactEmail;
   private String contactPhone;
   private String contactFullname;
   private String contactAddress;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant createdAt;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant updatedAt;
   private List<BookingDetail> bookingDetails;
 
@@ -25,6 +29,7 @@ public class BookingResponseDTO {
     this.userId = booking.getUser().getId();
     this.totalPrice = booking.getTotalPrice();
     this.note = booking.getNote();
+    this.orderCode = booking.getOrderCode();
     this.status = booking.getStatus();
     this.contactEmail = booking.getContactEmail();
     this.contactPhone = booking.getContactPhone();
@@ -92,4 +97,12 @@ public class BookingResponseDTO {
   public void setBookingDetails(List<BookingDetail> bookingDetails) {
     this.bookingDetails = bookingDetails;
   }
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
 }

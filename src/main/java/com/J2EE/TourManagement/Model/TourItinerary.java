@@ -1,6 +1,7 @@
 package com.J2EE.TourManagement.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -17,11 +18,10 @@ public class TourItinerary {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tour_detail_id")
-    @JsonBackReference(value = "detail-itinerary")
-    private TourDetail tourDetail;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "tour_detail_id")
+  @JsonBackReference(value = "detail-itinerary")
+  private TourDetail tourDetail;
 
   @NotBlank(message = "Tiêu đề lịch trình không được để trống")
   @Size(max = 255, message = "Tiêu đề lịch trình không được vượt quá 255 ký tự")
@@ -30,8 +30,10 @@ public class TourItinerary {
   @NotBlank(message = "Nội dung lịch trình không được để trống")
   private String content;
 
-  @Column(updatable = false) private LocalDateTime createdAt;
-
+  @Column(updatable = false)
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
+  private LocalDateTime createdAt;
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDateTime updatedAt;
 
   @PrePersist

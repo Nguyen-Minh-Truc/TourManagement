@@ -20,8 +20,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
-import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -34,44 +32,35 @@ public class SecurityConfiguration {
     return new BCryptPasswordEncoder();
   }
   @Bean
-  public SecurityFilterChain
-  filterChain(HttpSecurity http,
-              CustomAuthenticationEntryPoint customAuthenticationEntryPoint)
-      throws Exception {
+public SecurityFilterChain filterChain(HttpSecurity http,
+                                       CustomAuthenticationEntryPoint customAuthenticationEntryPoint)
+        throws Exception {
 
     http.csrf(c -> c.disable())
         .cors(Customizer.withDefaults())
-        .authorizeHttpRequests(
-            // mọi quyền đều truy cập trang "/", "/login" được
-            authz
-            -> authz
-                   .requestMatchers("/", "/api/v1/login",
-                                    "/api/v1/auth/refresh", "/api/v1/register","/api/v1/payment/vnpay_return")
-                   .permitAll()
-                   //   bất cứ url khác phải đăng nhập mới được
-                   .anyRequest()
-                   .authenticated())
-        .oauth2ResourceServer((oauth2)
-                                  -> oauth2.jwt(Customizer.withDefaults())
-                                         .authenticationEntryPoint(
-                                             customAuthenticationEntryPoint))
-
-        //  .exceptionHandling(
-        //   exceptions -> exceptions
-        //           .authenticationEntryPoint(new
-        //           BearerTokenAuthenticationEntryPoint()) //401
-        //            .accessDeniedHandler(new
-        //            BearerTokenAccessDeniedHandler())) //403
-
-        //  tắt đi form login mặc định
+        .authorizeHttpRequests(authz -> authz
+            .requestMatchers("/", "/api/v1/login",
+                             "/api/v1/auth/refresh", "/api/v1/register",
+                             "/api/v1/payment/vnpay_return",
+                             "/oauth2/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .oauth2Login(oauth2 -> oauth2
+            .defaultSuccessUrl("http://localhost:5173/sign-in?oauth=success", true)
+        )
+        .oauth2ResourceServer(oauth2 -> oauth2
+            .jwt(Customizer.withDefaults())
+            .authenticationEntryPoint(customAuthenticationEntryPoint)
+        )
         .formLogin(f -> f.disable())
-        // sữ dụng staleless (mặc đinh stalefull)
-        .sessionManagement(
-            session
-            -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // Quan trọng: Cho phép session khi cần cho OAuth2 login
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+        );
 
     return http.build();
-  }
+}
+
 
   private SecretKey getSecretKey() {
     byte[] keyBytes = Base64.from(jwtKey).decode();
