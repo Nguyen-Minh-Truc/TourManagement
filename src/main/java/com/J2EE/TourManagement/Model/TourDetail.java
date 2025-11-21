@@ -44,6 +44,16 @@ public class TourDetail {
   @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
   private LocalDate endDay;
 
+  @Column(name = "capacity")
+  @NotNull(message = "Tổng số chỗ không được để trống")
+  @Min(value = 0, message = "Tổng số chỗ không được âm")
+  private Integer capacity;
+
+  @Column(name = "remainingSeats")
+  @NotNull(message = "Số chỗ còn lại không được để trống")
+  @Min(value = 0, message = "Số chỗ còn lại không được âm")
+  private Integer remainingSeats;
+
   @NotBlank(message = "Trạng thái không được để trống")
   @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT",
            message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
@@ -73,5 +83,8 @@ public class TourDetail {
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
     this.status = (this.status == null) ? "DRAFT" : this.status;
+      if (this.remainingSeats == null && this.capacity != null) {
+          this.remainingSeats = this.capacity;
+      }
   }
 }

@@ -3,7 +3,9 @@ package com.J2EE.TourManagement.Service;
 import com.J2EE.TourManagement.Model.Booking;
 import com.J2EE.TourManagement.Model.DTO.PaymentDTO;
 import com.J2EE.TourManagement.Model.Payment;
+import com.J2EE.TourManagement.Model.PaymentOrder;
 import com.J2EE.TourManagement.Repository.BookingRep;
+import com.J2EE.TourManagement.Repository.PaymentOrderRepository;
 import com.J2EE.TourManagement.Repository.PaymentRep;
 import com.J2EE.TourManagement.Util.VNPayConfig;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class PaymentSer {
   private final PaymentRep paymentRep;
   private final BookingRep bookingRep;
+  private final PaymentOrderRepository paymentOrderRepository;
 
   @Value("${vnpay.tmnCode}") private String vnp_TmnCode;
 
@@ -31,9 +34,10 @@ public class PaymentSer {
 
   @Value("${vnpay.returnUrl}") private String vnp_ReturnUrl;
 
-  public PaymentSer(PaymentRep paymentRep, BookingRep bookingRep) {
+  public PaymentSer(PaymentRep paymentRep, BookingRep bookingRep, PaymentOrderRepository paymentOrderRepository) {
     this.paymentRep = paymentRep;
     this.bookingRep = bookingRep;
+      this.paymentOrderRepository = paymentOrderRepository;
   }
 
   public Payment createPaymentCash(PaymentDTO paymentDTO)
@@ -61,41 +65,43 @@ public class PaymentSer {
     return Payment;
   }
 
+  public Payment getPaymentByBookingId(long bookingId) throws InvalidException {
+      Payment payment = this.paymentRep.findByBookingId(bookingId)
+              .orElseThrow(() -> new InvalidException("Không tìm thấy payment cho bookingId: " + bookingId));
+      return payment;
+  }
+
   public boolean isIdExist(long id) { return this.paymentRep.existsById(id); }
 
-  public String createVNPayPayment(long amount, String orderInfo)
-      throws UnsupportedEncodingException {
-    String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
-    String vnp_IpAddr = "127.0.0.1";
-    Map<String, String> vnp_Params = new HashMap<>();
-    vnp_Params.put("vnp_Version", "2.1.0");
-    vnp_Params.put("vnp_Command", "pay");
-    vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-    vnp_Params.put(
-        "vnp_Amount",
-        String.valueOf(amount *
-                       100)); // nhân 100 vì VNPay yêu cầu đơn vị là VND * 100
-    vnp_Params.put("vnp_CurrCode", "VND");
-    vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-    vnp_Params.put("vnp_OrderInfo", orderInfo);
-    vnp_Params.put("vnp_OrderType", "other");
-    vnp_Params.put("vnp_Locale", "vn");
-    vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
-    vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+  public String createVNPayPayment(long bookingId)
+          throws UnsupportedEncodingException, InvalidException {
+      Booking booking = bookingRep.findById(bookingId)
+              .orElseThrow(() -> new InvalidException("Không tìm thấy booking"));
 
-    Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-    Date createDate = cld.getTime();
-    String vnp_CreateDate =
-        new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(createDate);
-    vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+      PaymentOrder order = new PaymentOrder();
+      order.setOrderCode(VNPayConfig.getRandomNumber(8));
+      order.setUserId(booking.getUser().getId());
+      order.setAmount(booking.getTotalPrice());
+      order.setStatus(EnumStatusPayment.PENDING);
+      paymentOrderRepository.save(order);
 
-    // Build query và hash
-    String query = VNPayConfig.buildUrl(vnp_Params);
-    String vnp_SecureHash = hmacSHA512(vnp_HashSecret, query);
-    String paymentUrl =
-        vnp_Url + "?" + query + "&vnp_SecureHash=" + vnp_SecureHash;
 
-    return paymentUrl;
+      Map<String, String> params = new HashMap<>();
+      params.put("vnp_Version", "2.1.0");
+      params.put("vnp_Command", "pay");
+      params.put("vnp_TmnCode", vnp_TmnCode);
+      params.put("vnp_Amount", String.valueOf((long)(order.getAmount() * 100)));
+      params.put("vnp_TxnRef", order.getOrderCode());
+      params.put("vnp_OrderInfo", "Thanh toan don hang " + order.getOrderCode());
+      params.put("vnp_OrderType", "other");
+      params.put("vnp_Locale", "vn");
+      params.put("vnp_ReturnUrl", vnp_ReturnUrl);
+      params.put("vnp_IpAddr", "127.0.0.1");
+
+      String query = VNPayConfig.buildUrl(params);
+      String secureHash = hmacSHA512(vnp_HashSecret, query);
+
+      return vnp_Url + "?" + query + "&vnp_SecureHash=" + secureHash;
   }
 
   private String hmacSHA512(String key, String data) {
@@ -115,29 +121,49 @@ public class PaymentSer {
       throw new RuntimeException("Lỗi khi tạo chữ ký VNPay", ex);
     }
   }
-  public Payment createPaymentAfterSuccess(long bookingId, String method)
-      throws InvalidException {
-    Booking booking = bookingRep.findById(bookingId).orElseThrow(
-        () -> new InvalidException("Không tìm thấy booking id: " + bookingId));
+    public Payment createPaymentAfterSuccess(Long userId, String orderCode)
+            throws InvalidException {
 
-    // Nếu booking đã có payment rồi thì bỏ qua
-    if (booking.getPayment() != null) {
-      throw new InvalidException("Booking này đã có thanh toán rồi.");
+        PaymentOrder order = paymentOrderRepository.findByOrderCode(orderCode)
+                .orElseThrow(() -> new InvalidException("Order không tồn tại"));
+
+        Booking booking = bookingRep.findByUserIdAndStatus(userId, EnumStatusBooking.PENDING)
+                .orElseThrow(() -> new InvalidException("Không tìm thấy booking PENDING"));
+
+        Payment payment = new Payment();
+        payment.setBooking(booking);
+        payment.setAmount(order.getAmount());
+        payment.setMethod("VNPAY");
+        payment.setStatus(EnumStatusPayment.SUCCESS);
+
+        paymentRep.save(payment);
+
+        booking.setStatus(EnumStatusBooking.COMPLETED);
+        booking.setPayment(payment);
+        bookingRep.save(booking);
+
+        return payment;
     }
 
-    Payment payment = new Payment();
-    payment.setBooking(booking);
-    payment.setMethod(method);
-    payment.setAmount(booking.getTotalPrice());
-    payment.setStatus(EnumStatusPayment.SUCCESS);
-    // Lưu payment
-    paymentRep.save(payment);
+    public Payment handlePaymentReturn(Map<String, String> params) throws InvalidException {
+        String orderCode = params.get("vnp_TxnRef");
+        String responseCode = params.get("vnp_ResponseCode"); // 00 = success
 
-    // Cập nhật trạng thái booking
-    booking.setStatus(EnumStatusBooking.COMPLETED);
-    booking.setPayment(payment);
-    bookingRep.save(booking);
+        PaymentOrder order = paymentOrderRepository.findByOrderCode(orderCode)
+                .orElseThrow(() -> new InvalidException("Không thấy Order"));
 
-    return payment;
-  }
+        if (responseCode.equals("00")) {
+            // Thanh toán thành công
+            order.setStatus(EnumStatusPayment.SUCCESS);
+            paymentOrderRepository.save(order);
+
+            return createPaymentAfterSuccess(order.getUserId(), orderCode);
+        }
+
+        // Thanh toán thất bại
+        order.setStatus(EnumStatusPayment.FAILED);
+        paymentOrderRepository.save(order);
+
+        return null;
+    }
 }

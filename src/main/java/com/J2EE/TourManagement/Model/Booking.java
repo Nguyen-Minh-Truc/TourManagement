@@ -4,21 +4,9 @@ import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -54,9 +42,17 @@ public class Booking {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant updatedAt;
 
-  @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
-  @JsonBackReference
-  private Payment payment;
+  @Column(name = "expiredAt", nullable = false)
+  @NotNull(message = "Thời gian hết hạn không được để trống")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
+  private Instant expiredAt;
+
+  @Column(name = "orderCode")
+  private String orderCode;
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Payment payment;
 
   @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL,
              orphanRemoval = true)
@@ -69,7 +65,15 @@ public class Booking {
 
   public User getUser() { return this.user; }
 
-  public void setUser(User user) { this.user = user; }
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public void setUser(User user) { this.user = user; }
 
   public Double getTotalPrice() { return this.totalPrice; }
 
@@ -115,15 +119,19 @@ public class Booking {
 
   public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 
-  public Payment getPayment() { return this.payment; }
-
-  public void setPayment(Payment payment) { this.payment = payment; }
-
   public List<BookingDetail> getBookingDetails() { return this.bookingDetails; }
 
   public void setBookingDetails(List<BookingDetail> bookingDetails) {
     this.bookingDetails = bookingDetails;
   }
+
+    public Instant getExpiredAt() {
+        return expiredAt;
+    }
+
+    public void setExpiredAt(Instant expiredAt) {
+        expiredAt = expiredAt;
+    }
 
   @PrePersist
   public void handleBeforeCreate() {
@@ -134,4 +142,13 @@ public class Booking {
   public void handleBeforeUpdate() {
     this.updatedAt = Instant.now();
   }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
 }

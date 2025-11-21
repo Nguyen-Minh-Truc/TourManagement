@@ -31,7 +31,6 @@ public class TourDetailService {
             throws InvalidException {
         TourDetail detail = tourDetailMapper.toEntity(dto);
 
-        // Gán tourid cho tourdetail
         if (dto.getTourId() != null) {
             Tour tour = tourRepository.findById(dto.getTourId())
                     .orElseThrow(() -> new InvalidException(

@@ -25,6 +25,10 @@ public class TourDetailDTO {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private LocalDate endDay;
 
+    private Integer capacity;
+
+    private Integer remainingSeats;
+
     private String status;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
