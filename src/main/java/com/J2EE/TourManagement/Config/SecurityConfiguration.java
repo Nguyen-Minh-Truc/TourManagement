@@ -39,9 +39,12 @@ public SecurityFilterChain filterChain(HttpSecurity http,
     http.csrf(c -> c.disable())
         .cors(Customizer.withDefaults())
         .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/ws/**").permitAll()
             .requestMatchers("/", "/api/v1/login",
                              "/api/v1/auth/refresh", "/api/v1/register",
                              "/api/v1/payment/vnpay_return",
+                             "/api/v1/tours", "/api/v1/tours/**",
+                             "/api/v1/tour_details/**",
                              "/oauth2/**").permitAll()
             .anyRequest().authenticated()
         )

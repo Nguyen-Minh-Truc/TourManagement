@@ -13,22 +13,27 @@ import com.J2EE.TourManagement.Repository.BookingDetailRep;
 import com.J2EE.TourManagement.Repository.BookingRep;
 import com.J2EE.TourManagement.Repository.TourDetailRepository;
 import com.J2EE.TourManagement.Util.constan.EnumStatusBooking;
+import com.J2EE.TourManagement.Util.constan.EnumTourDetailStatus;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class BookingSer {
 
   private final BookingRep bookingRep;
@@ -38,19 +43,21 @@ public class BookingSer {
   private final UserSer userSer;
   private final TourDetailService tourDetailSer;
   private final TourPriceService tourPriceSer;
+  private final SimpMessagingTemplate messagingTemplate;
 
-  public BookingSer(BookingRep bookingRep, BookingDetailRep bookingDetailRep, TourDetailRepository tourRepository, TourDetailRepository tourDetailRepository,
-                    PaymentSer paymentSer, UserSer userSer,
-                    TourDetailService tourDetailSer,
-                    TourPriceService tourPriceSer) {
-    this.bookingRep = bookingRep;
-    this.bookingDetailRep = bookingDetailRep;
-      this.tourDetailRepository = tourDetailRepository;
-      this.paymentSer = paymentSer;
-    this.userSer = userSer;
-    this.tourDetailSer = tourDetailSer;
-    this.tourPriceSer = tourPriceSer;
-  }
+//  public BookingSer(BookingRep bookingRep, BookingDetailRep bookingDetailRep, TourDetailRepository tourRepository, TourDetailRepository tourDetailRepository,
+//                    PaymentSer paymentSer, UserSer userSer,
+//                    TourDetailService tourDetailSer,
+//                    TourPriceService tourPriceSer, SimpMessagingTemplate messagingTemplate) {
+//    this.bookingRep = bookingRep;
+//    this.bookingDetailRep = bookingDetailRep;
+//      this.tourDetailRepository = tourDetailRepository;
+//      this.paymentSer = paymentSer;
+//    this.userSer = userSer;
+//    this.tourDetailSer = tourDetailSer;
+//    this.tourPriceSer = tourPriceSer;
+//      this.messagingTemplate = messagingTemplate;
+//  }
 
   // ===================== CREATE =====================
   @Transactional
@@ -59,7 +66,7 @@ public class BookingSer {
 
       booking.setUser(userSer.getUserById(bookingDTO.getUserId()));
     booking.setNote(bookingDTO.getNote());
-    booking.setStatus(bookingDTO.getStatus());
+//    booking.setStatus(bookingDTO.getStatus());
     booking.setContactEmail(bookingDTO.getContactEmail());
     booking.setContactPhone(bookingDTO.getContactPhone());
     booking.setOrderCode(bookingDTO.getOrderCode());
@@ -101,10 +108,16 @@ public class BookingSer {
         throw new RuntimeException("Hết chỗ!");
     }
 
+    int newRemainingSeats = tourDetail.getRemainingSeats() - capacity;
+    if (newRemainingSeats == 0) {
+        tourDetail.setStatus(EnumTourDetailStatus.FULL);
+    }
+
     tourDetail.setRemainingSeats(tourDetail.getRemainingSeats() - capacity);
     tourDetailRepository.save(tourDetail);
-
-    booking.setExpiredAt(Instant.from(LocalDateTime.now().plusMinutes(15)));
+    String destination = "/topic/tour-seats/" + tourDetail.getId();
+    messagingTemplate.convertAndSend(destination, newRemainingSeats);
+    booking.setExpiredAt(Instant.now().plus(15, ChronoUnit.MINUTES));
 
     booking.setTotalPrice(totalPrice);
     booking.setBookingDetails(details);

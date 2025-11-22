@@ -43,7 +43,6 @@ public class Booking {
   private Instant updatedAt;
 
   @Column(name = "expiredAt", nullable = false)
-  @NotNull(message = "Thời gian hết hạn không được để trống")
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s a", timezone = "GMT+7")
   private Instant expiredAt;
 
@@ -130,7 +129,7 @@ public class Booking {
     }
 
     public void setExpiredAt(Instant expiredAt) {
-        expiredAt = expiredAt;
+        this.expiredAt = expiredAt;
     }
 
   @PrePersist

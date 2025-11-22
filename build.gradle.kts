@@ -29,6 +29,7 @@ repositories {
 extra["springAiVersion"] = "1.1.0"
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.ai:spring-ai-advisors-vector-store")
     implementation("org.springframework.ai:spring-ai-vector-store:1.1.0")

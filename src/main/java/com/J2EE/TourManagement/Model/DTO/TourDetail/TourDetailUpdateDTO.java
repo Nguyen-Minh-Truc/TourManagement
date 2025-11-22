@@ -23,6 +23,6 @@ public class TourDetailUpdateDTO {
     private Integer remainingSeats;
 
 
-    @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT", message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
+    @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT|FULL", message = "Trạng thái phải là ACTIVE, INACTIVE, DRAFT hoặc FULL")
     private String status;
 }

@@ -1,5 +1,6 @@
 package com.J2EE.TourManagement.Model;
 
+import com.J2EE.TourManagement.Util.constan.EnumTourDetailStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -54,11 +55,9 @@ public class TourDetail {
   @Min(value = 0, message = "Số chỗ còn lại không được âm")
   private Integer remainingSeats;
 
-  @NotBlank(message = "Trạng thái không được để trống")
-  @Pattern(regexp = "ACTIVE|INACTIVE|DRAFT",
-           message = "Trạng thái phải là ACTIVE, INACTIVE hoặc DRAFT")
-
-  private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EnumTourDetailStatus status;
 
   @Column(updatable = false, name = "createdAt")
   @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
@@ -82,7 +81,7 @@ public class TourDetail {
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
-    this.status = (this.status == null) ? "DRAFT" : this.status;
+    this.status = (this.status == null) ? EnumTourDetailStatus.DRAFT : this.status;
       if (this.remainingSeats == null && this.capacity != null) {
           this.remainingSeats = this.capacity;
       }
