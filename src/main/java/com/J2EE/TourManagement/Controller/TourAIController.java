@@ -58,13 +58,12 @@ public class TourAIController {
         tourAIService.addTourToVectorStore(13L, "Nhật Bản - Mùa hoa anh đào",
                 "Ngắm hoa Sakura, núi Phú Sĩ, trải nghiệm tàu Shinkansen, ăn Sushi tươi sống, văn hóa kỷ luật, đường phố sạch sẽ hiện đại.", 35000000.0);
 
-        return "Đã nạp 3 tour mẫu vào Vector Store!";
+        return "Đã nạp 13 tour mẫu vào Vector Store!";
     }
 
     @GetMapping("/search")
-    public List<String> search(@RequestParam String query) {
+    public List<String> search(@RequestParam("query") String query) {
         List<Document> results = tourAIService.searchTours(query);
-
         // Trả về kết quả dạng String dễ đọc
         return results.stream()
                 .map(doc -> "Tìm thấy Tour ID: " + doc.getMetadata().get("tour_id") +
