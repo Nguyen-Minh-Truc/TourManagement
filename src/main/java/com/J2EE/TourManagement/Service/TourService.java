@@ -93,4 +93,8 @@ public class TourService {
         return this.tourRepository.existsById(id);
     }
 
+    public List<Tour> searchTours(String location, String startLocation, Integer remainingSeats) {
+        return tourRepository.searchTours(location, startLocation, remainingSeats);
+    }
+
 }

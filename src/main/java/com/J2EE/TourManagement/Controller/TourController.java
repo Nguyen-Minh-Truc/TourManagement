@@ -173,4 +173,16 @@ public class TourController {
 
     return ResponseEntity.ok(tourMapper.toDTO(reponse));
   }
+
+  
+  @GetMapping("/search")
+  public ResponseEntity<?> searchTours(
+      @RequestParam(name = "location", required = false) String location,
+      @RequestParam(name = "startLocation",
+                    required = false) String startLocation,
+      @RequestParam(name = "remainingSeats",
+                    required = false) Integer remainingSeats) {
+    return ResponseEntity.ok(
+        tourService.searchTours(location, startLocation, remainingSeats));
+  }
 }
