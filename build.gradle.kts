@@ -43,6 +43,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("com.turkraft.springfilter:jpa:3.1.7")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.703")
+
 
     implementation("com.google.api-client:google-api-client:2.2.0")
 

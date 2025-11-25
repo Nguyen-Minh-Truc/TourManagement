@@ -11,6 +11,10 @@ import com.J2EE.TourManagement.Service.TourService;
 import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import com.J2EE.TourManagement.Util.error.StorageException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -32,43 +36,88 @@ public class TourController {
   private final TourService tourService;
   private final TourMapper tourMapper;
   private final FileService fileService;
+  private final AmazonS3 s3Client;
+  @Value("${aws.s3.bucket-name}") private String bucketName;
 
   @Value("${mt.upload-file.base-uri}") private String basePath;
 
   public TourController(TourService tourService, FileService fileService,
-                        TourMapper tourMapper) {
+                        TourMapper tourMapper, AmazonS3 s3Client) {
     this.tourService = tourService;
     this.fileService = fileService;
     this.tourMapper = tourMapper;
+    this.s3Client = s3Client;
   }
 
-  @PostMapping("/file")
-  @ApiMessage("uploadFile")
+  // @PostMapping("/file")
+  // @ApiMessage("uploadFile")
+  // public ResponseEntity<UploadFileDTO>
+  // postMethodName(@RequestParam(name = "file", required = false)
+  //                MultipartFile file, @RequestParam("folder") String folder)
+  //     throws URISyntaxException, IOException, StorageException {
+  //   // valid
+  //   if (file == null || file.isEmpty()) {
+  //     throw new StorageException("file is empty.");
+  //   }
+  //   String fileName = file.getOriginalFilename();
+  //   List<String> allowedExtensions =
+  //       Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
+
+  //   boolean idValid = allowedExtensions.stream().anyMatch(
+  //       item -> fileName.toLowerCase().endsWith(item));
+
+  //   if (!idValid) {
+  //     throw new StorageException("file không hợp lệ. chỉ những file: " +
+  //                                allowedExtensions.toString());
+  //   }
+  //   // create folder if not exits
+  //   this.fileService.createDirectory(basePath + folder);
+  //   // store file
+  //   String uploadFile = "http://localhost:8080/storage/" + folder + "/" +
+  //                       this.fileService.store(file, folder);
+  //   UploadFileDTO uploadFileDTO = new UploadFileDTO(uploadFile,
+  //   Instant.now()); return ResponseEntity.ok().body(uploadFileDTO);
+  // }
+
+  @PostMapping("/upload")
   public ResponseEntity<UploadFileDTO>
-  postMethodName(@RequestParam(name = "file", required = false)
-                 MultipartFile file, @RequestParam("folder") String folder)
-      throws URISyntaxException, IOException, StorageException {
-    // valid
+  uploadFile(@RequestParam(name = "file", required = false) MultipartFile file,
+             @RequestParam("folder") String folder)
+      throws URISyntaxException, IOException, InvalidException {
+
     if (file == null || file.isEmpty()) {
-      throw new StorageException("file is empty.");
+      throw new InvalidException("file is empty.");
     }
+
     String fileName = file.getOriginalFilename();
     List<String> allowedExtensions =
         Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
 
-    boolean idValid = allowedExtensions.stream().anyMatch(
-        item -> fileName.toLowerCase().endsWith(item));
+    boolean isValid = allowedExtensions.stream().anyMatch(
+        ext -> fileName.toLowerCase().endsWith(ext));
 
-    if (!idValid) {
-      throw new StorageException("file không hợp lệ. chỉ những file: " +
-                                 allowedExtensions.toString());
+    if (!isValid) {
+      throw new InvalidException("File không hợp lệ. Chỉ những file: " +
+                                 allowedExtensions);
     }
-    // create folder if not exits
-    this.fileService.createDirectory(basePath + folder);
-    // store file
-    String uploadFile = "http://localhost:8080/storage/" + folder + "/" +
-                        this.fileService.store(file, folder);
-    UploadFileDTO uploadFileDTO = new UploadFileDTO(uploadFile, Instant.now());
+    // Đặt đường dẫn object trong bucket
+    String key = folder + "/" + fileName;
+
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentLength(file.getSize());
+    metadata.setContentType(file.getContentType());
+
+    // ⚡ Upload object với quyền PublicRead
+    PutObjectRequest putObjectRequest =
+        new PutObjectRequest(bucketName, key, file.getInputStream(), metadata)
+            .withCannedAcl(CannedAccessControlList.PublicRead);
+
+    s3Client.putObject(putObjectRequest);
+
+    // Lấy URL public
+    String fileUrl = s3Client.getUrl(bucketName, key).toString();
+
+    UploadFileDTO uploadFileDTO = new UploadFileDTO(fileUrl, Instant.now());
     return ResponseEntity.ok().body(uploadFileDTO);
   }
 
@@ -88,13 +137,14 @@ public class TourController {
     }
   }
 
-    //Create
-    @PostMapping
-    @ApiMessage("Thêm tour thành công.")
-    public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody Tour tour) {
-        Tour reponse = tourService.handleSave(tour);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tourMapper.toDTO(reponse));
-    }
+  // Create
+  @PostMapping
+  @ApiMessage("Thêm tour thành công.")
+  public ResponseEntity<TourDTO> postNewTour(@Valid @RequestBody Tour tour) {
+    Tour reponse = tourService.handleSave(tour);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(tourMapper.toDTO(reponse));
+  }
 
   // Read all
   @GetMapping
@@ -103,15 +153,15 @@ public class TourController {
     return ResponseEntity.ok(tourService.handleGetAll(spec, pageable));
   }
 
-    //Read by id
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getTourById(@PathVariable("id") long id)
-            throws InvalidException {
+  // Read by id
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getTourById(@PathVariable("id") long id)
+      throws InvalidException {
 
-        Tour reponse = tourService.handleGetById(id);
+    Tour reponse = tourService.handleGetById(id);
 
-        return ResponseEntity.ok(tourMapper.toDTO(reponse));
-    }
+    return ResponseEntity.ok(tourMapper.toDTO(reponse));
+  }
 
   // Update
   @PutMapping("/{id}")

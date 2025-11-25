@@ -1,5 +1,6 @@
 package com.J2EE.TourManagement.Service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileService {
   @Value("${mt.upload-file.base-uri}") private String basePath;
+
+  private final AmazonS3 s3Client;
+  @Value("${aws.s3.bucket-name}") private String bucketName;
+
+  public FileService(AmazonS3 s3Client){
+    this.s3Client = s3Client;
+  }
 
   public void createDirectory(String folder) throws URISyntaxException {
     URI uri = new URI(folder);
@@ -48,33 +56,40 @@ public class FileService {
     return finalName;
   }
 
-  // Xoá file theo folder + fileName
-  public boolean deleteFile(String folder, String fileName)
-      throws IOException, URISyntaxException {
-    Path filePath =
-        Paths.get(new URI(basePath)).resolve(folder).resolve(fileName);
-    System.out.println("Xoá file tại: " + filePath.toAbsolutePath());
+  // // Xoá file theo folder + fileName
+  // public boolean deleteFile(String folder, String fileName)
+  //     throws IOException, URISyntaxException {
+  //   Path filePath =
+  //       Paths.get(new URI(basePath)).resolve(folder).resolve(fileName);
+  //   System.out.println("Xoá file tại: " + filePath.toAbsolutePath());
 
-    if (Files.exists(filePath)) {
-      return Files.deleteIfExists(filePath);
-    } else {
-      System.out.println("File không tồn tại");
-      return false;
-    }
-  }
+  //   if (Files.exists(filePath)) {
+  //     return Files.deleteIfExists(filePath);
+  //   } else {
+  //     System.out.println("File không tồn tại");
+  //     return false;
+  //   }
+  // }
 
   // Xoá file theo URL upload
-  public boolean deleteFileByUrl(String fileUrl) throws IOException, URISyntaxException {
-    URI uri = URI.create(fileUrl);
-    String path = uri.getPath(); // ví dụ: /storage/tour/1686054321-file.pdf
-    String[] parts = path.split("/");
+  public boolean deleteFileByUrl(String fileUrl) throws IOException {
+    // 1. Lấy key từ URL
+    String key = extractKeyFromUrl(fileUrl);
 
-    if (parts.length < 3)
-      throw new IOException("URL file không hợp lệ");
+    // 2. Kiểm tra object tồn tại
+    if (!s3Client.doesObjectExist(bucketName, key)) {
+      return false;
+    }
 
-    String folder = parts[2];   // tour
-    String fileName = parts[3]; // 1686054321-file.pdf
+    // 3. Xoá object
+    s3Client.deleteObject(bucketName, key);
 
-    return deleteFile(folder, fileName);
+    return true;
+  }
+
+  private String extractKeyFromUrl(String fileUrl) {
+    // URL: https://my-bucket.s3.region.amazonaws.com/folder/file.png
+    // => key = folder/file.png
+    return fileUrl.substring(fileUrl.indexOf(".com/") + 5);
   }
 }
