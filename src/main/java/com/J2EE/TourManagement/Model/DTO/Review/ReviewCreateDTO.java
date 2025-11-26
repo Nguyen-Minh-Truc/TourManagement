@@ -1,9 +1,11 @@
 package com.J2EE.TourManagement.Model.DTO.Review;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ReviewCreateDTO {
 
     @NotNull(message = "ID tour không được để trống")

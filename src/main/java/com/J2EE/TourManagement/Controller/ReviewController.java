@@ -10,8 +10,10 @@ import com.J2EE.TourManagement.Util.annotation.ApiMessage;
 import com.J2EE.TourManagement.Util.error.InvalidException;
 import jakarta.validation.Path;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/tours")
 public class ReviewController {
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
@@ -34,7 +38,10 @@ public class ReviewController {
     public ResponseEntity<ReviewDTO> create(@Valid @RequestBody ReviewCreateDTO dto)
             throws InvalidException {
         Review reponse = reviewService.handleSave(dto);
-
+        messagingTemplate.convertAndSend(
+                "/topic/reviews/" + reponse.getTour().getId(),
+                reponse
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewMapper.toResponseDTO(reponse));
     }
 
