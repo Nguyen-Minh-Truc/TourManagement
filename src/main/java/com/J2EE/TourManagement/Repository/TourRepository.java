@@ -30,16 +30,16 @@ public interface TourRepository
   Set<TourDetail>
   fetchPricesForTourDetails(@Param("tours") List<Tour> tours);
 
-     @Query("""
-        SELECT DISTINCT t FROM Tour t
-        JOIN t.tourDetails td
-        WHERE (:location IS NULL OR t.location LIKE %:location%)
-        AND (:startLocation IS NULL OR td.startLocation LIKE %:startLocation%)
-        AND (:remainingSeats IS NULL OR td.remainingSeats >= :remainingSeats)
-    """)
-    List<Tour> searchTours(
-            @Param("location") String location,
-            @Param("startLocation") String startLocation,
-            @Param("remainingSeats") Integer remainingSeats
-    );
+   @Query("""
+    SELECT DISTINCT t FROM Tour t
+    JOIN t.tourDetails td
+    WHERE (:location IS NULL OR t.location = :location)
+    AND (:startLocation IS NULL OR td.startLocation = :startLocation)
+    AND (:remainingSeats IS NULL OR td.remainingSeats >= :remainingSeats)
+""")
+List<Tour> searchTours(
+        @Param("location") String location,
+        @Param("startLocation") String startLocation,
+        @Param("remainingSeats") Integer remainingSeats
+);
 }
