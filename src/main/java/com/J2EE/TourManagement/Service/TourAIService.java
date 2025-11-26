@@ -2,12 +2,15 @@ package com.J2EE.TourManagement.Service;
 
 import com.J2EE.TourManagement.Model.Tour;
 import com.J2EE.TourManagement.Repository.TourRepository;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -21,25 +24,23 @@ public class TourAIService {
         this.tourRepository = tourRepository;
     }
 
-    public void addTourToVectorStore(Long tourId, String tourName, String description, Double price) {
-        String content = "Tên tour: " + tourName + ". Mô tả: " + description + ". Giá: " + price;
+    public void addTourToVectorStore(Long tourId, String tourName, String description, BigDecimal price, String location, String duration) {
+        String content = "Tên tour: " + tourName + ". Mô tả: " + description + ". Giá: " + price + " VND. Địa điểm: " + location + ". Thời lượng: " + duration + ". Link chi tiết: /tour/details/" + tourId;
 
-        // 2. Tạo Metadata (để sau này tìm thấy vector thì biết nó là tour ID nào)
         Map<String, Object> metadata = Map.of(
                 "tour_id", tourId,
                 "price", price
         );
 
-        // 3. Tạo Document và lưu vào store
         Document document = new Document(content, metadata);
         vectorStore.add(List.of(document));
 
         System.out.println("Đã thêm tour '" + tourName + "' vào Vector Store.");
     }
 
-    @Transactional(readOnly = true) // Dùng readOnly để tối ưu hiệu năng query
+    @Transactional(readOnly = true)
     public String syncDatabaseToVectorStore() {
-        List<Tour> tours = tourRepository.findAll(); // Hoặc findByStatus("ACTIVE") nếu muốn lọc
+        List<Tour> tours = tourRepository.findAll();
 
         if (tours.isEmpty()) {
             return "Database trống, không có gì để nạp!";
@@ -47,23 +48,27 @@ public class TourAIService {
 
         int count = 0;
         for (Tour tour : tours) {
-            // 2. Xử lý dữ liệu trước khi nạp
-            // Ưu tiên dùng Long Description, nếu null thì dùng Short Description
             String description = tour.getLongDesc();
             if (description == null || description.isEmpty()) {
                 description = tour.getShortDesc();
             }
+            @NotNull(message = "Giá không được để trống")
+            @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
+            BigDecimal representativePrice = BigDecimal.ZERO;
+            if (tour.getTourDetails() != null && !tour.getTourDetails().isEmpty()) {
+                var firstDetail = tour.getTourDetails().get(0);
+                if (firstDetail.getTourPrices() != null && !firstDetail.getTourPrices().isEmpty()) {
+                    representativePrice = firstDetail.getTourPrices().get(0).getPrice();
+                }
+            }
 
-            // 3. Xử lý giá (Vì bảng Tour của bạn không có cột price, nó nằm ở TourDetail -> TourPrice)
-            // Để đơn giản cho AI tìm kiếm, ta tạm để giá = 0 hoặc bạn cần viết query phức tạp hơn để lấy min_price.
-            Double representativePrice = 0.0;
-
-            // 4. Gọi hàm thêm vào Vector
             addTourToVectorStore(
                     tour.getId(),
                     tour.getTitle(),
                     description,
-                    representativePrice
+                    representativePrice,
+                    tour.getLocation(),
+                    tour.getDuration()
             );
             count++;
         }
@@ -73,9 +78,9 @@ public class TourAIService {
 
     public List<Document> searchTours(String query) {
         SearchRequest searchRequest = SearchRequest.builder()
-                .query(query)              // Câu truy vấn của user
-                .topK(3)                   // Lấy top 2 kết quả
-                .similarityThreshold(0.5)  // (Tuỳ chọn) Độ chính xác tối thiểu 0.5
+                .query(query)
+                .topK(3)
+                .similarityThreshold(0.5)
                 .build();
         return vectorStore.similaritySearch(searchRequest);
     }
