@@ -38,7 +38,7 @@ public class BookingController {
   @PostMapping("/booking/create")
   @ApiMessage("Đặt tour thành công.")
   public ResponseEntity<?>
-  postBooking(@RequestBody @Valid BookingDTO newBooking) {
+  postBooking(@RequestBody @Valid BookingDTO newBooking) throws InvalidException {
     BookingResponseDTO booking = this.bookingSer.handleSaveBooking(newBooking);
 
     return ResponseEntity.ok().body(booking);
