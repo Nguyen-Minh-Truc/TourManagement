@@ -30,11 +30,11 @@ public interface TourRepository
   Set<TourDetail>
   fetchPricesForTourDetails(@Param("tours") List<Tour> tours);
 
-   @Query("""
+@Query("""
     SELECT DISTINCT t FROM Tour t
     JOIN t.tourDetails td
-    WHERE (:location IS NULL OR t.location = :location)
-    AND (:startLocation IS NULL OR td.startLocation = :startLocation)
+    WHERE (:location IS NULL OR t.location LIKE CONCAT('%', :location, '%'))
+    AND (:startLocation IS NULL OR td.startLocation LIKE CONCAT('%', :startLocation, '%'))
     AND (:remainingSeats IS NULL OR td.remainingSeats >= :remainingSeats)
 """)
 List<Tour> searchTours(
