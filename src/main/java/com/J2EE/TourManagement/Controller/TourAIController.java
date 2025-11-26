@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/ai/tour")
+@RequestMapping("/api/v1/ai/tour")
 public class TourAIController {
     private final TourAIService tourAIService;
     public TourAIController(TourAIService tourAIService) {

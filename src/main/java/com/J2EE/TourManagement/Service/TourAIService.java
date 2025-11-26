@@ -52,8 +52,6 @@ public class TourAIService {
             if (description == null || description.isEmpty()) {
                 description = tour.getShortDesc();
             }
-            @NotNull(message = "Giá không được để trống")
-            @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
             BigDecimal representativePrice = BigDecimal.ZERO;
             if (tour.getTourDetails() != null && !tour.getTourDetails().isEmpty()) {
                 var firstDetail = tour.getTourDetails().get(0);
@@ -80,7 +78,7 @@ public class TourAIService {
         SearchRequest searchRequest = SearchRequest.builder()
                 .query(query)
                 .topK(3)
-                .similarityThreshold(0.5)
+                .similarityThreshold(0.7)
                 .build();
         return vectorStore.similaritySearch(searchRequest);
     }
