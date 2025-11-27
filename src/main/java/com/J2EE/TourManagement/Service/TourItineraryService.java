@@ -67,9 +67,15 @@ public class TourItineraryService {
 
     // Delete
     public void handleDelete(Long id) throws InvalidException {
-        if (!tourItineraryRepository.existsById(id)) {
-            throw new InvalidException("Không tìm thấy TourItinerary với id = " + id);
+        TourItinerary existing = tourItineraryRepository.findById(id)
+                .orElseThrow(() -> new InvalidException("Không  tìm thấy TourItinerary với id = " + id));
+
+        // Gỡ TourItinerary khỏi danh sách trong TourDetail
+        TourDetail detail = existing.getTourDetail();
+        if (detail != null && detail.getItineraries() != null) {
+            detail.getItineraries().remove(existing);
         }
-        tourItineraryRepository.deleteById(id);
+
+        tourItineraryRepository.delete(existing);
     }
 }

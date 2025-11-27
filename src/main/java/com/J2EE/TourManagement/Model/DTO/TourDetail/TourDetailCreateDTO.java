@@ -45,5 +45,5 @@ public class TourDetailCreateDTO {
     private List<TourPriceCreateWithTourDetailDTO> tourPrices;
 
     @Valid
-    private List<TourItineraryCreateWithTourDetailDTO> tourItinerary;
+    private List<TourItineraryCreateWithTourDetailDTO> itineraries;
 }

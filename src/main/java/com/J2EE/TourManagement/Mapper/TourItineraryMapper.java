@@ -15,11 +15,11 @@ public interface TourItineraryMapper {
     List<TourItineraryDTO> toResponseDTOList(List<TourItinerary> itineraries);
 
     // CreateDTO -> Entity
+    @Mapping(target = "tourDetail", ignore = true)
     TourItinerary toEntity(TourItineraryCreateDTO dto);
 
+    @Mapping(target = "tourDetail", ignore = true)
     TourItinerary toEntityWithDetail(TourItineraryCreateWithTourDetailDTO dto);
-
-    TourItineraryCreateDTO toDTO(TourItinerary entity);
 
     // UpdateDTO -> cập nhật entity hiện có
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
