@@ -56,4 +56,5 @@ public class TourDetailController {
         return ResponseEntity.ok(tourDetailMapper.toDTO(reponse));
     }
 
+    
 }

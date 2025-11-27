@@ -45,7 +45,6 @@ public class TourAIService {
         if (tours.isEmpty()) {
             return "Database trống, không có gì để nạp!";
         }
-
         int count = 0;
         for (Tour tour : tours) {
             String description = tour.getLongDesc();
