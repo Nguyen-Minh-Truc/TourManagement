@@ -41,5 +41,5 @@ public class TourDetailDTO {
     private List<TourPriceDTO> tourPrices;
 
     // Itinerary
-    private TourItineraryDTO itinerary;
+    private List<TourItineraryDTO> itineraries;
 }

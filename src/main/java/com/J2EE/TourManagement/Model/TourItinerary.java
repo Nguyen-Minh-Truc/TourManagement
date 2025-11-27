@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,35 +18,37 @@ import lombok.Setter;
 @Setter
 public class TourItinerary {
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "tour_detail_id")
-  @JsonBackReference(value = "detail-itinerary")
-  private TourDetail tourDetail;
+    @ManyToOne
+    @JoinColumn(name = "tour_detail_id")
+    @JsonBackReference(value = "detail-itinerary")
+    private TourDetail tourDetail;
 
-  @NotBlank(message = "Tiêu đề lịch trình không được để trống")
-  @Size(max = 255, message = "Tiêu đề lịch trình không được vượt quá 255 ký tự")
-  private String title;
+    @NotBlank(message = "Tiêu đề lịch trình không được để trống")
+    @Size(max = 255, message = "Tiêu đề lịch trình không được vượt quá 255 ký tự")
+    private String title;
 
-  @Lob
-  @Column(columnDefinition = "LONGTEXT")
-  @NotBlank(message = "Nội dung lịch trình không được để trống")
-  private String content;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    @NotBlank(message = "Nội dung lịch trình không được để trống")
+    private String content;
 
-  @Column(updatable = false)
-  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
-  private LocalDateTime createdAt;
-  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
-  private LocalDateTime updatedAt;
+    @Column(updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
+    private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
+    private LocalDateTime updatedAt;
 
-  @PrePersist
-  protected void onCreate() {
-    this.createdAt = LocalDateTime.now();
-  }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
-  @PreUpdate
-  protected void onUpdate() {
-    this.updatedAt = LocalDateTime.now();
-  }
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

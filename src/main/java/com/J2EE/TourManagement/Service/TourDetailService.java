@@ -58,8 +58,8 @@ public class TourDetailService {
         }
 
         // Map và set TourItinerary
-        if (dto.getTourItinerary() != null) {
-            List<TourItinerary> itineraries = dto.getTourItinerary().stream()
+        if (dto.getItineraries() != null) {
+            List<TourItinerary> itineraries = dto.getItineraries().stream()
                     .map(itDTO -> {
                         TourItinerary it = tourItineraryMapper.toEntityWithDetail(itDTO);
                         it.setTourDetail(tourDetail); // set parent
