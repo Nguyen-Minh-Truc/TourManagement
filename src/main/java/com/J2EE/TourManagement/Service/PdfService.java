@@ -23,7 +23,7 @@ public class PdfService {
 
     // Tiêu đề
     Paragraph title = new Paragraph(
-        "HÓA ĐƠN BOOKING", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18));
+        "BOOKING", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18));
     title.setAlignment(Element.ALIGN_CENTER);
     document.add(title);
     document.add(new Paragraph(" ")); // dòng trống
