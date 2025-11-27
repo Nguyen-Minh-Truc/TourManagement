@@ -27,17 +27,8 @@ public class TourDetailService {
   private final TourPriceRepository tourPriceRepository;
 
     // Create
-    public TourDetail handleSave(TourDetailCreateDTO dto)
+    public TourDetail handleSave(TourDetail detail)
             throws InvalidException {
-        TourDetail detail = tourDetailMapper.toEntity(dto);
-
-        if (dto.getTourId() != null) {
-            Tour tour = tourRepository.findById(dto.getTourId())
-                    .orElseThrow(() -> new InvalidException(
-                            "Không tìm thấy Tour với id = " + dto.getTourId()));
-            detail.setTour(tour);
-        }
-
         return tourDetailRepository.save(detail);
     }
 
