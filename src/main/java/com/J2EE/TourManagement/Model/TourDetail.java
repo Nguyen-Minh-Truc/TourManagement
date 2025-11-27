@@ -23,7 +23,7 @@ public class TourDetail {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "tour_id")
-  @JsonBackReference
+  @JsonBackReference(value = "detail-tour")
   private Tour tour;
 
   @Column(name = "tour_id", insertable = false, updatable = false)

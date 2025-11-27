@@ -17,6 +17,10 @@ public interface TourItineraryMapper {
     // CreateDTO -> Entity
     TourItinerary toEntity(TourItineraryCreateDTO dto);
 
+    TourItinerary toEntityWithDetail(TourItineraryCreateWithTourDetailDTO dto);
+
+    TourItineraryCreateDTO toDTO(TourItinerary entity);
+
     // UpdateDTO -> cập nhật entity hiện có
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDTO(TourItineraryUpdateDTO dto, @MappingTarget TourItinerary itinerary);

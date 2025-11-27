@@ -10,12 +10,14 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {TourPriceMapper.class})
+@Mapper(componentModel = "spring", uses = {TourPriceMapper.class, TourItineraryMapper.class})
 public interface TourDetailMapper {
 
     TourDetailDTO toDTO(TourDetail tourDetail);
+
     List<TourDetailDTO> toDTOList(List<TourDetail> tourDetails);
 
+    @Mapping(target = "tour", ignore = true)
     TourDetail toEntity(TourDetailCreateDTO tourDetailCreateDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
