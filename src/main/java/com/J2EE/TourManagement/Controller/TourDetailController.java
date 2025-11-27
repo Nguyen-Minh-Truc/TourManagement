@@ -35,9 +35,9 @@ public class TourDetailController {
     //Create
     @ApiMessage("Thêm tour detail thành công!")
     @PostMapping("/details")
-    public ResponseEntity<TourDetailDTO> create(@Valid @RequestBody TourDetailCreateDTO dto)
+    public ResponseEntity<TourDetailDTO> create(@Valid @RequestBody TourDetail tourDetail)
             throws InvalidException {
-        TourDetail detail = tourDetailService.handleSave(dto);
+        TourDetail detail = tourDetailService.handleSave(tourDetail);
         return ResponseEntity.status(HttpStatus.CREATED).body(tourDetailMapper.toDTO(detail));
     }
 
