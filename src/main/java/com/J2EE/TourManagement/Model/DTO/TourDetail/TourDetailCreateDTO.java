@@ -2,7 +2,9 @@ package com.J2EE.TourManagement.Model.DTO.TourDetail;
 
 import com.J2EE.TourManagement.Model.DTO.Review.ReviewCreateDTO;
 import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryCreateDTO;
+import com.J2EE.TourManagement.Model.DTO.TourItinerary.TourItineraryCreateWithTourDetailDTO;
 import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceCreateDTO;
+import com.J2EE.TourManagement.Model.DTO.TourPrice.TourPriceCreateWithTourDetailDTO;
 import com.J2EE.TourManagement.Model.TourItinerary;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -40,8 +42,8 @@ public class TourDetailCreateDTO {
     private String status;
 
     @Valid
-    private List<TourPriceCreateDTO> tourPrices;
+    private List<TourPriceCreateWithTourDetailDTO> tourPrices;
 
     @Valid
-    private TourItineraryCreateDTO tourItinerary;
+    private List<TourItineraryCreateWithTourDetailDTO> tourItinerary;
 }

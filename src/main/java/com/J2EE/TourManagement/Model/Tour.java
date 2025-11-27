@@ -54,14 +54,12 @@ public class Tour {
   private String createdBy;
   private String updatedBy;
 
-  @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true,
-             fetch = FetchType.LAZY)
-  @JsonManagedReference
+  @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @JsonManagedReference(value = "detail-tour")
   private List<TourDetail> tourDetails;
 
   // Quan hệ 1 Tour có nhiều Review
-  @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true,
-             fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JsonManagedReference(value = "detail-review")
   private List<Review> reviews;
 
